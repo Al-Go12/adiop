@@ -1340,6 +1340,461 @@
       letter-spacing: .2em
     }
 
+    @media (max-width: 1024px) {
+      .hero-text {
+        max-width: 52vw;
+      }
+
+      .hero-title {
+        font-size: clamp(42px, 7vw, 74px);
+      }
+
+      .port-grid {
+        width: min(56vw, 560px);
+      }
+    }
+
+    @media (max-width: 900px) {
+      body {
+        cursor: auto;
+      }
+
+      #cur,
+      #cur-ring {
+        display: none;
+      }
+
+      nav {
+        padding: 1rem 4vw;
+      }
+
+      .nav-logo {
+        gap: 8px;
+        font-size: 18px;
+        letter-spacing: .09em;
+      }
+
+      .nav-logo img {
+        height: 30px;
+      }
+
+      nav ul {
+        gap: 1rem;
+      }
+
+      nav a {
+        font-size: 9px;
+        letter-spacing: .22em;
+      }
+
+      #audio-btn {
+        bottom: 1.2rem;
+        right: 1rem;
+        width: 42px;
+        height: 42px;
+      }
+
+      #hero {
+        min-height: 100svh;
+        padding-top: 86px;
+      }
+
+      .hero-text {
+        left: 50%;
+        top: 17%;
+        transform: translate(-50%, 0);
+        max-width: min(92vw, 520px);
+        text-align: center;
+        z-index: 300;
+      }
+
+      body.loaded .hero-text {
+        transform: translate(-50%, 0);
+      }
+
+      .hero-eyebrow {
+        font-size: 10px;
+        letter-spacing: .42em;
+        margin-bottom: .8rem;
+      }
+
+      .hero-title {
+        font-size: clamp(38px, 12vw, 64px);
+        margin-bottom: .9rem;
+      }
+
+      .hero-sub {
+        font-size: 12px;
+        line-height: 1.5;
+        letter-spacing: .12em;
+      }
+
+      .scroll-cue {
+        bottom: 1.2rem;
+      }
+
+      #story-scroll {
+        height: 760vh;
+      }
+
+      #cam-root {
+        width: min(94vw, 560px);
+        height: min(45vh, 360px);
+      }
+
+      #cam-glow {
+        width: 640px;
+        height: 640px;
+        filter: blur(80px);
+      }
+
+      #chap-label {
+        top: 5.2rem;
+        font-size: 9px;
+        letter-spacing: .26em;
+      }
+
+      .side-txt {
+        display: none;
+      }
+
+      .sec-panel {
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .s-label {
+        font-size: 8px;
+        letter-spacing: .4em;
+      }
+
+      .s-title {
+        font-size: clamp(30px, 8.8vw, 54px);
+      }
+
+      .s-body {
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      #panel-portfolio {
+        flex-direction: column;
+        justify-content: flex-start;
+        gap: 1rem;
+        padding: 13.5vh 5vw 2.8rem;
+      }
+
+      .port-left {
+        max-width: 100%;
+        text-align: center;
+      }
+
+      .port-grid {
+        width: min(92vw, 520px);
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+        transform: translateY(24px);
+      }
+
+      #panel-vision {
+        justify-content: flex-start;
+        padding: 12.2vh 5vw 2.4rem;
+      }
+
+      .vision-ring {
+        width: min(92vw, 460px);
+        height: auto;
+        min-height: 70vh;
+        max-height: 84vh;
+        border-radius: 28px;
+        padding: 1.35rem 1.1rem;
+      }
+
+      .vision-ring::before,
+      .vision-ring::after {
+        border-radius: 22px;
+      }
+
+      .vis-pillars {
+        gap: .8rem;
+        margin-top: 1rem;
+      }
+
+      .vp-d {
+        font-size: 10px;
+        line-height: 1.45;
+      }
+
+      #panel-services {
+        justify-content: flex-start;
+        padding: 12.2vh 4vw 2.4rem;
+      }
+
+      #panel-services .s-title {
+        font-size: clamp(28px, 8.6vw, 46px) !important;
+      }
+
+      .svc-wrap {
+        max-width: min(94vw, 620px);
+      }
+
+      .svc-head {
+        margin-bottom: .65rem;
+      }
+
+      .svc-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .svc-card {
+        padding: .9rem .75rem;
+      }
+
+      .svc-img {
+        height: 58px;
+        margin-bottom: .55rem;
+      }
+
+      .svc-name {
+        font-size: 13px;
+        margin-top: .2rem;
+      }
+
+      .svc-desc {
+        font-size: 9px;
+        line-height: 1.28;
+        margin-top: .3rem;
+      }
+
+      .svc-num {
+        font-size: 20px;
+        top: .5rem;
+        right: .55rem;
+      }
+
+      #panel-team {
+        justify-content: flex-start;
+        padding: 12.2vh 5vw 2.4rem;
+        gap: 1rem;
+      }
+
+      .team-row {
+        width: min(92vw, 440px);
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      .t-frame {
+        width: 100%;
+      }
+
+      .vf-tl,
+      .vf-tr,
+      .vf-bl,
+      .vf-br {
+        display: none;
+      }
+
+      #panel-cta {
+        justify-content: flex-start;
+        padding: 13.5vh 5vw 2.4rem;
+      }
+
+      .cta-inner {
+        max-width: 100%;
+        padding: 0;
+      }
+
+      .cta-big {
+        font-size: clamp(52px, 16vw, 94px);
+      }
+
+      #stats-row {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .stat-box {
+        padding: 2.2rem 1.2rem;
+      }
+
+      .stat-lbl {
+        letter-spacing: .18em;
+      }
+
+      #reel {
+        padding: 3.2rem 0;
+      }
+
+      .r-tile {
+        width: clamp(190px, 66vw, 300px);
+        height: clamp(130px, 40vw, 210px);
+      }
+
+      .about-img {
+        min-height: 280px;
+      }
+
+      .about-copy {
+        padding: 2.4rem 6vw;
+      }
+
+      .about-copy p {
+        font-size: 16px;
+        line-height: 1.65;
+      }
+
+      #contact {
+        padding: 4.6rem 6vw;
+        gap: 2.2rem;
+      }
+
+      .c-title {
+        font-size: clamp(44px, 16vw, 84px);
+      }
+
+      .c-body {
+        max-width: 100%;
+      }
+
+      .cin {
+        font-size: 14px;
+        margin-bottom: .7rem;
+      }
+
+      footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: .55rem;
+        padding: 1.4rem 6vw;
+      }
+
+      footer p {
+        font-size: 9px;
+        letter-spacing: .12em;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .svc-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .svc-img {
+        height: 74px;
+      }
+
+      .svc-name {
+        font-size: 14px;
+      }
+
+      .svc-desc {
+        font-size: 10px;
+        line-height: 1.36;
+      }
+    }
+
+    @media (max-width: 600px) {
+      nav {
+        padding: .75rem 3.6vw;
+      }
+
+      .nav-logo {
+        font-size: 16px;
+      }
+
+      .nav-logo span {
+        display: none;
+      }
+
+      nav ul {
+        gap: .55rem;
+      }
+
+      nav a {
+        font-size: 8px;
+        letter-spacing: .12em;
+      }
+
+      #hero {
+        padding-top: 76px;
+      }
+
+      .hero-text {
+        top: 15%;
+      }
+
+      .hero-eyebrow {
+        letter-spacing: .28em;
+      }
+
+      .hero-title {
+        font-size: clamp(36px, 13vw, 54px);
+      }
+
+      .hero-sub {
+        font-size: 11px;
+      }
+
+      #story-scroll {
+        height: 810vh;
+      }
+
+      #chap-label {
+        top: 4.6rem;
+        letter-spacing: .16em;
+      }
+
+      .vision-ring {
+        min-height: 66vh;
+      }
+
+      .vis-pillars {
+        grid-template-columns: 1fr;
+      }
+
+      .svc-card {
+        padding: .8rem .75rem;
+      }
+
+      .svc-img {
+        height: 76px;
+      }
+
+      .svc-name {
+        font-size: 14px;
+      }
+
+      .svc-desc {
+        font-size: 10px;
+        line-height: 1.38;
+      }
+
+      .team-row {
+        width: 100%;
+      }
+
+      .r-row.fwd {
+        animation-duration: 32s;
+      }
+
+      .r-row.rev {
+        animation-duration: 38s;
+      }
+
+      .about-copy {
+        padding: 2rem 5vw;
+      }
+    }
+
+    @media (hover: none) and (pointer: coarse) {
+      .port-label,
+      .r-tile::after,
+      .t-info {
+        opacity: 1;
+      }
+    }
+
     /* LOADER */
     #loader {
       position: fixed;
@@ -2420,14 +2875,15 @@
 
       // Adjust camera root position based on scroll progress
       const camRoot = document.getElementById('cam-root');
-      const isMobile = window.innerWidth <= 800;
+      const isMobile = window.innerWidth <= 900;
+      const isSmallMobile = window.innerWidth <= 520;
 
       if (prog < 0.1) {
         if (isMobile) {
           // On mobile, keep it centered but pushed down below text
           camRoot.style.left = '50%';
-          camRoot.style.top = '70%'; // Push below hero text
-          camRoot.style.transform = 'translate(-50%, -50%) scale(0.85)';
+          camRoot.style.top = isSmallMobile ? '74%' : '70%';
+          camRoot.style.transform = `translate(-50%, -50%) scale(${isSmallMobile ? 0.76 : 0.84})`;
         } else {
           // In hero (desktop), shift slightly right to balance layout
           camRoot.style.left = '60%'; 
@@ -2438,7 +2894,7 @@
         // Center for dismantling
         camRoot.style.left = '50%';
         camRoot.style.top = '50%';
-        camRoot.style.transform = 'translate(-50%, -50%)';
+        camRoot.style.transform = isMobile ? 'translate(-50%, -50%) scale(0.9)' : 'translate(-50%, -50%)';
       }
 
       // crack
