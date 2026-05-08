@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AdYouUp Studios — Show Up. Stand Out. Scale Up.</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@300;400;500;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@300;400;500;700&display=swap');
 
     *,
     *::before,
@@ -411,16 +411,6 @@
       transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
-    /* Ultra-realistic float effect on hero hover */
-    #hero:hover #cam-root .cp:nth-child(1) { transform: translate(-15px, -10px) rotate(-2deg); }
-    #hero:hover #cam-root .cp:nth-child(2) { transform: translate(15px, 10px) rotate(2deg); }
-    #hero:hover #cam-root .cp:nth-child(3) { transform: translate(0, -20px) scale(1.02); }
-    #hero:hover #cam-root .cp:nth-child(4) { transform: translate(5px, 5px) rotate(1deg); }
-    #hero:hover #cam-root .cp:nth-child(5) { transform: translate(-5px, -5px) scale(1.05); }
-    #hero:hover #cam-root .cp:nth-child(6) { transform: translate(0, 0) scale(1.08); }
-    #hero:hover #cam-root .cp:nth-child(7) { transform: translate(-20px, -20px) rotate(-5deg); }
-    #hero:hover #cam-root .cp:nth-child(8) { transform: translate(20px, 20px) rotate(5deg); }
-
     .cp {
       position: absolute;
       top: 0;
@@ -731,11 +721,12 @@
       justify-content: center;
       align-items: center;
       flex-direction: column;
-      padding: 0 5vw
+      padding: 0 4vw
     }
 
     .svc-wrap {
       width: 100%;
+      max-width: min(95vw, 1240px);
       opacity: 0;
       transform: translateY(36px);
       transition: opacity .7s .2s, transform .7s .2s cubic-bezier(.22, 1, .36, 1)
@@ -748,7 +739,7 @@
 
     .svc-head {
       text-align: center;
-      margin-bottom: 2rem
+      margin-bottom: 1.1rem
     }
 
     .svc-grid {
@@ -766,7 +757,7 @@
 
     .svc-card {
       background: var(--bg);
-      padding: 2.4rem 2rem;
+      padding: 1.45rem 1.2rem;
       position: relative;
       overflow: hidden;
       transition: background .4s;
@@ -789,9 +780,9 @@
 
     .svc-img {
       width: 100%;
-      height: 140px;
+      height: clamp(74px, 10vh, 110px);
       object-fit: cover;
-      margin-bottom: 1.8rem;
+      margin-bottom: 1rem;
       filter: none; /* Full color by default */
       opacity: 1;
       transition: filter .3s, opacity .3s, transform .6s;
@@ -804,28 +795,59 @@
 
     .svc-name {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: 20px;
+      font-size: 17px;
       letter-spacing: .05em;
-      margin-top: 1rem;
+      margin-top: .45rem;
       color: var(--off);
     }
 
     .svc-desc {
-      font-size: 12px;
-      line-height: 1.6;
+      font-size: 11px;
+      line-height: 1.45;
       color: var(--dim);
-      margin-top: .8rem
+      margin-top: .45rem
     }
 
     .svc-num {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: 40px;
+      font-size: 30px;
       color: var(--red);
       opacity: 0.12;
       line-height: 1;
       position: absolute;
-      top: 2.4rem;
-      right: 2rem;
+      top: 1.3rem;
+      right: 1.2rem;
+    }
+
+    @media (max-height: 820px) and (min-width: 701px) {
+      .svc-head {
+        margin-bottom: .6rem
+      }
+
+      .svc-card {
+        padding: 1rem .95rem
+      }
+
+      .svc-img {
+        height: clamp(62px, 8vh, 88px);
+        margin-bottom: .7rem
+      }
+
+      .svc-name {
+        font-size: 15px
+      }
+
+      .svc-desc {
+        font-size: 10px;
+        line-height: 1.35;
+        margin-top: .35rem
+      }
+
+      .svc-num {
+        font-size: 24px;
+        top: .8rem;
+        right: .8rem
+      }
     }
 
     /* ─ PANEL: TEAM ─ */
@@ -1101,8 +1123,6 @@
       filter: brightness(0.7);
       transform: scale(1.08)
     }
-      transform: scale(1.07)
-    }
 
     .r-tile::after {
       content: attr(data-t);
@@ -1316,7 +1336,7 @@
 
     footer p {
       font-size: 10px;
-      color: rgba(237, 232, 221, .18);
+      color: rgba(14, 14, 16, .62);
       letter-spacing: .2em
     }
 
@@ -1459,7 +1479,7 @@
   <div id="prog"></div>
 
   <!-- AUDIO -->
-  <audio id="bg-audio" loop preload="auto">
+  <audio id="bg-audio" loop preload="auto" autoplay muted playsinline>
     <source src="https://www.bensound.com/bensound-music/bensound-slowmotion.mp3" type="audio/mpeg">
     <source src="https://cdn.pixabay.com/audio/2022/08/04/audio_2dde668d05.mp3" type="audio/mpeg">
   </audio>
@@ -1597,7 +1617,7 @@
         <div class="svc-wrap">
           <div class="svc-head">
             <span class="s-label">— 03 / What We Create</span>
-            <h2 class="s-title" style="font-size:clamp(44px,7vw,90px)">THE ART<br>OF <b>MOTION</b></h2>
+            <h2 class="s-title" style="font-size:clamp(36px,5.8vw,72px)">THE ART<br>OF <b>MOTION</b></h2>
           </div>
           <div class="svc-grid">
             <div class="svc-card">
@@ -1615,7 +1635,7 @@
               <p class="svc-desc">Visual stories that radiate health and build trust with your community.</p>
             </div>
             <div class="svc-card">
-              <img class="svc-img" src="https://images.unsplash.com/photo-1524178232363-1fb28f74b0cd?w=600&q=80"
+              <img class="svc-img" src="https://images.pexels.com/photos/8926554/pexels-photo-8926554.jpeg"
                 alt="Education & Coaching">
               <div class="svc-num">03</div>
               <div class="svc-name">Education & Coaching</div>
@@ -1833,13 +1853,13 @@
         <p class="c-body">Have a vision that needs to be felt? We translate ideas into cinematic experiences that linger
           long after the screen goes dark.</p>
       </div>
-      <div class="c-form">
+      <form class="c-form" action="#" method="post" onsubmit="return false;">
         <input class="cin" type="text" placeholder="Your Name">
         <input class="cin" type="email" placeholder="Email Address">
         <input class="cin" type="text" placeholder="Project Type">
         <textarea class="cin" rows="4" placeholder="Tell us about your vision…" style="resize:none"></textarea>
-        <button class="c-btn"><span>Send the Brief →</span></button>
-      </div>
+        <button class="c-btn" type="submit"><span>Send the Brief →</span></button>
+      </form>
     </section>
 
     <!-- FOOTER -->
@@ -1872,23 +1892,6 @@
       }, 100);
     });
 
-    // Auto-play music on first interaction (required by browsers)
-    document.addEventListener('click', () => {
-      if (!audioStarted) {
-        audio.play().catch(() => {});
-        audioStarted = true;
-        audioIcon.innerHTML = playIcon;
-      }
-    }, { once: true });
-
-    document.addEventListener('scroll', () => {
-      if (!audioStarted) {
-        audio.play().catch(() => {});
-        audioStarted = true;
-        audioIcon.innerHTML = playIcon;
-      }
-    }, { once: true });
-
     /* ══ CURSOR ══ */
     const cur = document.getElementById('cur'), ring = document.getElementById('cur-ring');
     let mx = 0, my = 0, rx = 0, ry = 0;
@@ -1902,32 +1905,84 @@
     const audio = document.getElementById('bg-audio');
     const audioBtn = document.getElementById('audio-btn');
     const audioIcon = document.getElementById('audio-icon');
-    audio.volume = 0.22;
+    const TARGET_AUDIO_VOLUME = 0.22;
+    audio.volume = 0;
+    audio.muted = true;
     let audioStarted = false;
 
     const muteIcon = `<path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>`;
     const playIcon = `<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>`;
 
-    function startAudio() {
-      if (!audioStarted) {
-        audio.play().catch(() => { });
+    function setAudioUi(isPlaying) {
+      audioIcon.innerHTML = isPlaying ? playIcon : muteIcon;
+      audioBtn.style.borderColor = isPlaying ? 'rgba(176,138,42,.6)' : 'rgba(237,232,221,.2)';
+    }
+
+    function fadeInAudio() {
+      const start = performance.now();
+      const from = audio.volume;
+      const dur = 1000;
+      function tick(now) {
+        const t = clamp((now - start) / dur, 0, 1);
+        audio.volume = lerp(from, TARGET_AUDIO_VOLUME, t);
+        if (t < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+
+    function tryAutoPlay(unmuteAfterStart = true) {
+      const pr = audio.play();
+      if (!pr || typeof pr.then !== 'function') {
+        audioStarted = !audio.paused;
+        if (audioStarted) {
+          if (unmuteAfterStart) {
+            audio.muted = false;
+            fadeInAudio();
+          }
+          setAudioUi(true);
+        }
+        return;
+      }
+
+      pr.then(() => {
         audioStarted = true;
+        if (unmuteAfterStart) {
+          audio.muted = false;
+          fadeInAudio();
+        }
+        setAudioUi(true);
+      }).catch(() => {
+        setAudioUi(false);
+      });
+    }
+
+    function startAudio() {
+      if (audio.paused || !audioStarted) {
+        tryAutoPlay(true);
       }
     }
+    setAudioUi(false);
 
     audioBtn.addEventListener('click', () => {
       if (audio.paused) {
-        audio.play().catch(() => { });
-        audioIcon.innerHTML = playIcon;
-        audioBtn.style.borderColor = 'rgba(176,138,42,.6)';
+        audio.muted = false;
+        if (audio.volume < TARGET_AUDIO_VOLUME) audio.volume = TARGET_AUDIO_VOLUME;
+        tryAutoPlay(false);
       } else {
         audio.pause();
-        audioIcon.innerHTML = muteIcon;
-        audioBtn.style.borderColor = 'rgba(237,232,221,.2)';
+        setAudioUi(false);
       }
     });
 
-    // Try autoplay on first scroll
+    // Attempt autoplay immediately, plus interaction fallback for stricter browsers.
+    window.addEventListener('load', () => { tryAutoPlay(true); }, { once: true });
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && (audio.paused || !audioStarted)) {
+        tryAutoPlay(true);
+      }
+    });
+    document.addEventListener('click', startAudio, { once: true });
+    document.addEventListener('scroll', startAudio, { once: true, passive: true });
     window.addEventListener('scroll', startAudio, { once: true, passive: true });
 
     /* ══ BUILD CAMERA SVG ══ */
@@ -2234,10 +2289,28 @@
     }
 
     const storyRoot = document.getElementById('cam-root');
+    const camRootEl = document.getElementById('cam-root');
 
     // Build actual animated set in story section
     const pieces = buildCamera(storyRoot);
     const crack = pieces[8];
+    const HERO_HOVER_DETACH = [
+      [-18, -10, -2.2, -0.015],
+      [18, 10, 2.2, -0.015],
+      [0, -18, -1.6, -0.012],
+      [8, -4, 1.4, 0.01],
+      [-8, 4, -1.4, 0.01],
+      [0, 0, 0, 0.024],
+      [-14, -12, -3.2, -0.02],
+      [14, 14, 3.2, -0.02],
+    ];
+    let hoverDetach = 0;
+    let hoverDetachTarget = 0;
+
+    camRootEl.addEventListener('mouseenter', () => { hoverDetachTarget = 1; });
+    camRootEl.addEventListener('mouseleave', () => { hoverDetachTarget = 0; });
+    camRootEl.addEventListener('touchstart', () => { hoverDetachTarget = 1; }, { passive: true });
+    camRootEl.addEventListener('touchend', () => { hoverDetachTarget = 0; }, { passive: true });
 
     /* ══ ANIMATION STATES ══ */
     // Chapter scroll ranges [0..1] through the story zone
@@ -2397,6 +2470,17 @@
           rz += t * 15;
         }
 
+        // Subtle hover detach in hero: pieces float apart a little.
+        if (!isMobile && chi === 0 && prog < 0.11 && hoverDetach > 0.001) {
+          const det = HERO_HOVER_DETACH[i];
+          const t = Date.now() * 0.0009;
+          tx += det[0] * hoverDetach + Math.sin(t + i * 0.85) * (2.2 * hoverDetach);
+          ty += det[1] * hoverDetach + Math.cos(t * 0.9 + i * 0.7) * (2.8 * hoverDetach);
+          rz += det[2] * hoverDetach;
+          sc += det[3] * hoverDetach;
+          op = Math.max(0, op - 0.04 * hoverDetach);
+        }
+
         piece.el.style.transform = `translate(${tx}px,${ty}px) perspective(1100px) rotateX(${rx3d}deg) rotateZ(${rz}deg) scale(${sc})`;
         piece.el.style.opacity = op.toString();
 
@@ -2422,7 +2506,9 @@
       const prog = clamp(-rect.top / total, 0, 1);
       let chi = 0;
       for (let i = 0; i < CHAPTERS.length; i++)if (prog >= CHAPTERS[i].s) chi = i;
-      if (chi === 5) onScroll();
+      hoverDetach += (hoverDetachTarget - hoverDetach) * 0.08;
+      const hoverAnimating = Math.abs(hoverDetachTarget - hoverDetach) > 0.001;
+      if (chi === 5 || (chi === 0 && prog < 0.11 && (hoverDetach > 0.001 || hoverAnimating))) onScroll();
       animFrameId = requestAnimationFrame(animLoop);
     }
     animLoop();
