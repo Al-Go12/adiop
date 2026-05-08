@@ -2743,11 +2743,121 @@
       return [p0, p1, p2, p3, p4, p5, p6, p7, p8];
     }
 
+    function enhanceCameraDetail(pieces) {
+      const [p0, p1, p2, p3, p4, p5, p6, p7] = pieces;
+      if (!p0 || !p1 || !p2 || !p3 || !p4 || !p5 || !p6 || !p7) return;
+
+      // Body micro-texture and machining marks.
+      const tex0 = svgEl('g', { opacity: .18 }, p0.svg);
+      for (let i = 0; i < 28; i++) {
+        const y = 114 + i * 10;
+        svgEl('line', { x1: 86, y1: y, x2: 274, y2: y, stroke: i % 2 ? 'rgba(255,255,255,.045)' : 'rgba(0,0,0,.32)', 'stroke-width': .45 }, tex0);
+      }
+      for (let i = 0; i < 22; i++) {
+        const x = 94 + (i % 11) * 16;
+        const y = 120 + Math.floor(i / 11) * 116;
+        svgEl('circle', { cx: x, cy: y, r: .85, fill: 'rgba(255,255,255,.12)' }, tex0);
+      }
+      svgEl('rect', { x: 88, y: 180, width: 90, height: 20, rx: 3, fill: '#0b0b0b', stroke: '#202020', 'stroke-width': .8 }, p0.svg);
+      svgEl('text', { x: 94, y: 194, fill: '#7f7f7f', 'font-family': 'monospace', 'font-size': 7.5, 'letter-spacing': 1.4 }, p0.svg).textContent = 'FULL FRAME';
+      svgEl('text', { x: 95, y: 222, fill: '#484848', 'font-family': 'monospace', 'font-size': 6.2, 'letter-spacing': 1.2 }, p0.svg).textContent = 'CINE LOG  12-BIT RAW';
+
+      // Right side controls, labels, and extra hardware edges.
+      const info1 = svgEl('g', { opacity: .94 }, p1.svg);
+      svgEl('rect', { x: 458, y: 145, width: 62, height: 34, rx: 5, fill: '#121212', stroke: '#262626', 'stroke-width': 1 }, info1);
+      svgEl('text', { x: 464, y: 158, fill: '#8f8f8f', 'font-family': 'monospace', 'font-size': 6.2 }, info1).textContent = 'REC  4K60';
+      svgEl('text', { x: 464, y: 170, fill: '#636363', 'font-family': 'monospace', 'font-size': 6.2 }, info1).textContent = 'S-LOG3  10BIT';
+      [['C1', 480, 318], ['C2', 500, 318], ['Fn', 520, 318]].forEach(([t, x, y]) => {
+        svgEl('circle', { cx: x, cy: y, r: 6.3, fill: '#151515', stroke: '#2a2a2a', 'stroke-width': 1 }, info1);
+        svgEl('text', { x, y: y + 2, fill: '#666', 'font-family': 'monospace', 'font-size': 4.8, 'text-anchor': 'middle' }, info1).textContent = t;
+      });
+      svgEl('path', { d: 'M 496 88 L 542 88 L 542 402 L 496 402', fill: 'none', stroke: 'rgba(255,255,255,.05)', 'stroke-width': 1.2 }, info1);
+
+      // Top plate LCD style telemetry and extra dials detail.
+      const lcd = svgEl('g', {}, p2.svg);
+      svgEl('rect', { x: 186, y: 56, width: 70, height: 22, rx: 3, fill: '#070c09', stroke: '#1d2a20', 'stroke-width': .9 }, lcd);
+      svgEl('rect', { x: 190, y: 60, width: 62, height: 14, rx: 2, fill: 'rgba(80,150,95,.12)' }, lcd);
+      svgEl('text', { x: 193, y: 66, fill: 'rgba(120,220,140,.45)', 'font-family': 'monospace', 'font-size': 4.8 }, lcd).textContent = '1/250  F2.0';
+      svgEl('text', { x: 193, y: 72, fill: 'rgba(120,220,140,.35)', 'font-family': 'monospace', 'font-size': 4.8 }, lcd).textContent = 'ISO640   24P';
+      for (let i = 0; i < 18; i++) {
+        const a = (i / 18) * Math.PI * 2;
+        svgEl('line', {
+          x1: 458 + 13 * Math.cos(a), y1: 64 + 13 * Math.sin(a),
+          x2: 458 + (i % 3 === 0 ? 19 : 16) * Math.cos(a), y2: 64 + (i % 3 === 0 ? 19 : 16) * Math.sin(a),
+          stroke: 'rgba(255,255,255,.12)', 'stroke-width': .6
+        }, p2.svg);
+      }
+
+      // Outer lens ring: denser engraving + fine knurl + serial arc.
+      const ring3 = svgEl('g', {}, p3.svg);
+      for (let i = 0; i < 220; i++) {
+        const a = (i / 220) * Math.PI * 2;
+        const rIn = 118, rOut = i % 5 === 0 ? 146 : 142;
+        svgEl('line', {
+          x1: 360 + rIn * Math.cos(a), y1: 270 + rIn * Math.sin(a),
+          x2: 360 + rOut * Math.cos(a), y2: 270 + rOut * Math.sin(a),
+          stroke: i % 5 === 0 ? 'rgba(255,255,255,.09)' : 'rgba(0,0,0,.45)',
+          'stroke-width': i % 5 === 0 ? .7 : .45
+        }, ring3);
+      }
+      svgEl('path', { id: 'arcDetailTop', d: 'M 222 198 A 146 146 0 0 1 498 198', fill: 'none' }, p3.svg);
+      const t1 = svgEl('text', { 'font-size': 7.2, 'font-family': 'monospace', fill: '#787878', 'letter-spacing': 2.4 }, p3.svg);
+      svgEl('textPath', { href: '#arcDetailTop' }, t1).textContent = 'ASPHERICAL   MULTI-COATED   WEATHER SEALED';
+      svgEl('path', { id: 'arcDetailBottom', d: 'M 228 346 A 138 138 0 0 0 492 346', fill: 'none' }, p3.svg);
+      const t2 = svgEl('text', { 'font-size': 6.2, 'font-family': 'monospace', fill: '#535353', 'letter-spacing': 1.8 }, p3.svg);
+      svgEl('textPath', { href: '#arcDetailBottom' }, t2).textContent = 'SN: 24A7X93   MADE FOR CINEMA';
+
+      // Mid ring: tighter f-stop references and tiny witness marks.
+      for (let i = 0; i < 96; i++) {
+        const a = (i / 96) * Math.PI * 2;
+        const r1 = 103, r2 = i % 8 === 0 ? 95 : 99;
+        svgEl('line', {
+          x1: 360 + r1 * Math.cos(a), y1: 270 + r1 * Math.sin(a),
+          x2: 360 + r2 * Math.cos(a), y2: 270 + r2 * Math.sin(a),
+          stroke: i % 8 === 0 ? 'rgba(176,138,42,.75)' : 'rgba(255,255,255,.08)',
+          'stroke-width': i % 8 === 0 ? 1 : .55
+        }, p4.svg);
+      }
+
+      // Lens glass: more layers, iris geometry, and coating specks.
+      const d5e = mkDefs(p5.svg);
+      const coreG = svgEl('radialGradient', { id: 'lensCoreDeep', cx: '50%', cy: '50%', r: '56%' }, d5e);
+      [['0%', '#020203'], ['40%', '#04050a'], ['75%', '#090d18'], ['100%', '#020204']].forEach(([o, c]) => svgEl('stop', { offset: o, 'stop-color': c }, coreG));
+      svgEl('circle', { cx: 360, cy: 270, r: 62, fill: 'url(#lensCoreDeep)', opacity: .95 }, p5.svg);
+      const iris = svgEl('g', { opacity: .52 }, p5.svg);
+      for (let i = 0; i < 9; i++) {
+        svgEl('ellipse', { cx: 360, cy: 228, rx: 16.5, ry: 33, fill: '#050609', transform: `rotate(${i * 40},360,270)` }, iris);
+      }
+      svgEl('circle', { cx: 360, cy: 270, r: 33, fill: '#020204' }, p5.svg);
+      for (let i = 0; i < 28; i++) {
+        const a = (i / 28) * Math.PI * 2 + .2;
+        const r = 72 + (i % 3) * 2.3;
+        svgEl('circle', {
+          cx: 360 + r * Math.cos(a), cy: 270 + r * Math.sin(a),
+          r: .95, fill: i % 2 ? 'rgba(140,190,255,.14)' : 'rgba(196,31,24,.08)'
+        }, p5.svg);
+      }
+      svgEl('ellipse', { cx: 334, cy: 242, rx: 24, ry: 8, fill: 'rgba(158,196,255,.14)', transform: 'rotate(-20,334,242)' }, p5.svg);
+      svgEl('ellipse', { cx: 382, cy: 300, rx: 18, ry: 6, fill: 'rgba(196,60,40,.08)', transform: 'rotate(18,382,300)' }, p5.svg);
+
+      // Flash + bottom hardware labels.
+      svgEl('text', { x: 78, y: 72, fill: '#6f6f6f', 'font-family': 'monospace', 'font-size': 5.4, 'letter-spacing': .8 }, p6.svg).textContent = 'TTL READY';
+      for (let i = 0; i < 4; i++) {
+        svgEl('circle', { cx: 90 + i * 12, cy: 86, r: 1.2, fill: 'rgba(255,255,255,.18)' }, p6.svg);
+      }
+      svgEl('rect', { x: 404, y: 398, width: 92, height: 18, rx: 2, fill: '#101010', stroke: '#222', 'stroke-width': .8 }, p7.svg);
+      svgEl('text', { x: 410, y: 410, fill: '#626262', 'font-family': 'monospace', 'font-size': 6.3, 'letter-spacing': .9 }, p7.svg).textContent = '4K CINE  |  PRO BODY';
+      for (let i = 0; i < 5; i++) {
+        svgEl('rect', { x: 66 + i * 18, y: 404, width: 8, height: 8, rx: 1.2, fill: i % 2 ? '#151515' : '#0b0b0b', stroke: '#202020', 'stroke-width': .6 }, p7.svg);
+      }
+    }
+
     const storyRoot = document.getElementById('cam-root');
     const camRootEl = document.getElementById('cam-root');
 
     // Build actual animated set in story section
     const pieces = buildCamera(storyRoot);
+    enhanceCameraDetail(pieces);
     const crack = pieces[8];
     const HERO_HOVER_DETACH = [
       [-18, -10, -2.2, -0.015],
