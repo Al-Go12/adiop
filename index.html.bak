@@ -4,9 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AdYouUp Studios — Show Up. Stand Out. Scale Up.</title>
+  <title>FRAMEBREAK — Cinematic Videography</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@300;400;500;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Barlow+Condensed:wght@200;300;400;600;700;900&display=swap');
 
     *,
     *::before,
@@ -17,11 +17,11 @@
     }
 
     :root {
-      --bg: #070608; /* Cinematic Black */
+      --bg: #070608;
       --bg2: #0d0b10;
-      --off: #ede8dd; /* Warm Cream */
-      --red: #c41f18; /* Signal Red */
-      --gold: #b08a2a; /* Prestige Gold */
+      --off: #ede8dd;
+      --red: #c41f18;
+      --gold: #b08a2a;
       --dim: rgba(237, 232, 221, 0.42);
       --glass: rgba(237, 232, 221, 0.03);
     }
@@ -33,7 +33,7 @@
     body {
       background: var(--bg);
       color: var(--off);
-      font-family: 'Inter', sans-serif;
+      font-family: 'Barlow Condensed', sans-serif;
       overflow-x: hidden;
       cursor: none
     }
@@ -71,7 +71,17 @@
       border-color: var(--gold)
     }
 
-    /* GRAIN REMOVED per user request */
+    /* GRAIN */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.88' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='.038'/%3E%3C/svg%3E");
+      background-size: 220px;
+      pointer-events: none;
+      z-index: 9990;
+      opacity: .55
+    }
 
     /* PROGRESS */
     #prog {
@@ -137,19 +147,16 @@
     }
 
     .nav-logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-decoration: none;
-      color: var(--off);
       font-family: 'Bebas Neue', sans-serif;
       font-size: clamp(17px, 1.8vw, 24px);
       letter-spacing: .14em;
+      color: var(--off);
+      text-decoration: none
     }
 
-    .nav-logo img {
-      height: 32px;
-      width: auto;
+    .nav-logo em {
+      color: var(--red);
+      font-style: normal
     }
 
     nav ul {
@@ -177,18 +184,22 @@
     #hero {
       height: 100vh;
       position: relative;
-      overflow: visible; /* Allow sticky camera to be seen */
+      overflow: hidden;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
       padding-top: min(12vh, 100px);
-      z-index: 5;
     }
 
-    /* deep vignette removed for clarity */
+    /* deep vignette */
     #hero::before {
-      display: none;
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 100% 100% at 50% 50%, transparent 30%, rgba(7, 6, 8, .7) 100%);
+      z-index: 2;
+      pointer-events: none
     }
 
     /* subtle grid */
@@ -202,26 +213,15 @@
     }
 
     .hero-text {
-      position: absolute;
-      left: 4.5vw;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 1000; /* Ensure slogans are above everything */
-      text-align: left;
+      position: relative;
+      z-index: 5;
+      text-align: center;
       opacity: 0;
-      /* removed animation for loader sync */
-      max-width: 40vw;
-      pointer-events: none; /* Let clicks pass through to camera if needed */
-      transition: opacity 1s 1.5s, transform 1s 1.5s;
-    }
-
-    body.loaded .hero-text {
-      opacity: 1;
-      transform: translateY(-50%);
+      animation: rUp .9s .3s forwards;
     }
 
     .hero-eyebrow {
-      font-size: 11px;
+      font-size: 10px;
       letter-spacing: .65em;
       text-transform: uppercase;
       color: var(--gold);
@@ -232,29 +232,39 @@
 
     .hero-title {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(48px, 6vw, 90px);
-      line-height: 0.95;
-      letter-spacing: .02em;
-      text-transform: uppercase;
-      margin-bottom: 2rem;
+      font-size: clamp(52px, 9vw, 130px);
+      line-height: .9;
+      letter-spacing: -.01em;
     }
 
-    .hero-title span {
+    .hero-title .r {
+      color: var(--red);
+      display: block
+    }
+
+    .hero-title .s {
       display: block;
+      -webkit-text-stroke: 1px rgba(237, 232, 221, .2);
+      color: transparent
     }
 
     .hero-sub {
       margin-top: 1.4rem;
-      font-size: 13px;
-      letter-spacing: .2em;
+      font-size: 12px;
+      letter-spacing: .45em;
       color: var(--dim);
-      font-weight: 300;
-      line-height: 1.6;
+      text-transform: uppercase;
+      font-weight: 300
     }
 
-    /* CAMERA STAGE — removed redundant camera from hero */
+    /* CAMERA STAGE — in hero, below text */
     #cam-hero-wrap {
-      display: none;
+      position: relative;
+      z-index: 4;
+      width: min(88vw, 760px);
+      height: min(50vh, 420px);
+      margin-top: min(3vh, 24px);
+      flex-shrink: 0;
     }
 
     #cam-hero-wrap .cp {
@@ -345,21 +355,14 @@
 ══════════════════════════════ */
     #story-scroll {
       position: relative;
-      height: 650vh;
-      z-index: 10; /* Bring above hero to show camera */
-      margin-top: -100vh; /* Pull up to overlap with hero */
+      height: 650vh
     }
 
     #story-sticky {
       position: sticky;
       top: 0;
       height: 100vh;
-      overflow: hidden;
-      pointer-events: none; /* Let clicks pass through to hero if needed */
-    }
-    
-    #story-sticky > * {
-      pointer-events: auto;
+      overflow: hidden
     }
 
     /* ambient glow center */
@@ -384,11 +387,11 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: min(70vw, 760px);
+      width: min(84vw, 720px);
       height: min(56vh, 460px);
       perspective: 1800px;
-      z-index: 100;
-      transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+      pointer-events: none;
+      z-index: 3;
     }
 
     .cp {
@@ -1277,112 +1280,10 @@
       color: rgba(237, 232, 221, .18);
       letter-spacing: .2em
     }
-
-    /* LOADER */
-    #loader {
-      position: fixed;
-      inset: 0;
-      background: var(--bg);
-      z-index: 10000;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      transition: clip-path 1.2s cubic-bezier(0.85, 0, 0.15, 1);
-      clip-path: circle(150% at 50% 50%);
-    }
-
-    #loader.hidden {
-      clip-path: circle(0% at 50% 50%);
-    }
-
-    .loader-shutter {
-      width: 120px;
-      height: 120px;
-      position: relative;
-      margin-bottom: 2rem;
-    }
-
-    .shutter-blade {
-      position: absolute;
-      inset: 0;
-      border: 1px solid var(--gold);
-      border-radius: 50%;
-      clip-path: polygon(50% 50%, 100% 0, 100% 100%);
-      animation: rotateShutter 2s infinite linear;
-    }
-
-    @keyframes rotateShutter {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-
-    .loader-logo {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-      opacity: 0;
-      animation: fadeInUp 0.8s 0.3s forwards;
-    }
-
-    .loader-logo img {
-      height: 60px;
-      width: auto;
-    }
-
-    .loader-logo span {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 24px;
-      letter-spacing: 0.2em;
-      color: var(--off);
-    }
-
-    .loader-bar {
-      width: 200px;
-      height: 1px;
-      background: rgba(176, 138, 42, 0.1);
-      margin-top: 2rem;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .loader-progress {
-      position: absolute;
-      left: 0;
-      top: 0;
-      height: 100%;
-      width: 0%;
-      background: var(--gold);
-      transition: width 0.4s ease;
-    }
-
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
   </style>
 </head>
 
 <body>
-
-  <div id="loader">
-    <div class="loader-shutter">
-      <div class="shutter-blade" style="transform: rotate(0deg)"></div>
-      <div class="shutter-blade" style="transform: rotate(60deg)"></div>
-      <div class="shutter-blade" style="transform: rotate(120deg)"></div>
-      <div class="shutter-blade" style="transform: rotate(180deg)"></div>
-      <div class="shutter-blade" style="transform: rotate(240deg)"></div>
-      <div class="shutter-blade" style="transform: rotate(300deg)"></div>
-    </div>
-    <div class="loader-logo">
-      <img src="logo.jpg" alt="AdYouUp Logo">
-      <span>ADYOUUP STUDIOS</span>
-    </div>
-    <div class="loader-bar">
-      <div class="loader-progress" id="loader-progress"></div>
-    </div>
-  </div>
 
   <div id="cur"></div>
   <div id="cur-ring"></div>
@@ -1402,10 +1303,7 @@
 
   <!-- NAV -->
   <nav>
-    <a href="#" class="nav-logo">
-      <img src="logo.jpg" alt="AdYouUp Studios Logo">
-      <span>AdYouUp Studios</span>
-    </a>
+    <a href="#" class="nav-logo">FRAME<em>BREAK</em></a>
     <ul>
       <li><a href="#after-scroll">Work</a></li>
       <li><a href="#reel">Reel</a></li>
@@ -1419,13 +1317,13 @@
 
     <!-- TEXT first -->
     <div class="hero-text">
-      <p class="hero-eyebrow">Creative Studio &nbsp;·&nbsp; Brand Excellence</p>
+      <p class="hero-eyebrow">Cinematic Videography &nbsp;·&nbsp; Est. 2018</p>
       <h1 class="hero-title">
-        <span>SHOW UP.</span>
-        <span style="color:var(--red)">STAND OUT.</span>
-        <span>SCALE UP.</span>
+        WE
+        <span class="r">BREAK</span>
+        <span class="s">FRAMES</span>
       </h1>
-      <p class="hero-sub">Built for your business.<br>Not recycled from someone else's.</p>
+      <p class="hero-sub">Motion &nbsp;·&nbsp; Story &nbsp;·&nbsp; Emotion</p>
     </div>
 
     <!-- CAMERA below text -->
@@ -1441,8 +1339,8 @@
   <div id="story-scroll">
     <div id="story-sticky">
       <div id="cam-glow"></div>
-      <span class="side-txt side-l">ADYOUUP STUDIOS</span>
-      <span class="side-txt side-r">SHOW UP · STAND OUT · SCALE UP</span>
+      <span class="side-txt side-l">FRAMEBREAK STUDIO</span>
+      <span class="side-txt side-r">MOTION · STORY · EMOTION</span>
       <div id="chap-label">— The Camera —</div>
 
       <!-- Camera pieces injected by JS -->
@@ -1500,23 +1398,23 @@
           <div class="vis-pillars">
             <div class="vp">
               <div class="vp-n">01</div>
-              <div class="vp-t">Clarity</div>
-              <div class="vp-d">Defining the exact story your audience needs to hear.</div>
+              <div class="vp-t">Precision</div>
+              <div class="vp-d">Every shot calculated. Every light intentional.</div>
             </div>
             <div class="vp">
               <div class="vp-n">02</div>
-              <div class="vp-t">Purpose</div>
-              <div class="vp-d">Every brand system built with specific goals in mind.</div>
+              <div class="vp-t">Feeling</div>
+              <div class="vp-d">Technical mastery in service of raw emotion.</div>
             </div>
             <div class="vp">
               <div class="vp-n">03</div>
-              <div class="vp-t">Precision</div>
-              <div class="vp-d">The obsession with every frame and pixel mattering.</div>
+              <div class="vp-t">Story</div>
+              <div class="vp-d">Narrative first. Equipment second. Always.</div>
             </div>
             <div class="vp">
               <div class="vp-n">04</div>
-              <div class="vp-t">Story</div>
-              <div class="vp-d">Powerful brands aren't just seen. They're felt.</div>
+              <div class="vp-t">Legacy</div>
+              <div class="vp-d">Films that outlast the moment they were made.</div>
             </div>
           </div>
         </div>
@@ -1531,46 +1429,48 @@
           </div>
           <div class="svc-grid">
             <div class="svc-card">
-              <img class="svc-img" src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&q=80"
-                alt="Real Estate Branding">
+              <img class="svc-img" src="https://images.unsplash.com/photo-1616469829167-0bd76a80c913?w=400&q=80"
+                alt="Cinematic Films">
               <div class="svc-num">01</div>
-              <div class="svc-name">Real Estate</div>
-              <p class="svc-desc">Cinematic property films and branding that turn listings into landmarks.</p>
+              <div class="svc-name">Cinematic Films</div>
+              <p class="svc-desc">Feature-grade production for brands and storytellers who demand the extraordinary.</p>
             </div>
             <div class="svc-card">
-              <img class="svc-img" src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&q=80"
-                alt="Health & Wellness">
+              <img class="svc-img" src="https://images.unsplash.com/photo-1574717024453-354056adbbc4?w=400&q=80"
+                alt="Commercial Video">
               <div class="svc-num">02</div>
-              <div class="svc-name">Health & Wellness</div>
-              <p class="svc-desc">Visual stories that radiate health and build trust with your community.</p>
+              <div class="svc-name">Commercial Video</div>
+              <p class="svc-desc">High-impact content that converts viewers into believers and believers into buyers.
+              </p>
             </div>
             <div class="svc-card">
-              <img class="svc-img" src="https://images.unsplash.com/photo-1524178232363-1fb28f74b0cd?w=400&q=80"
-                alt="Education & Coaching">
+              <img class="svc-img" src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400&q=80"
+                alt="Event Coverage">
               <div class="svc-num">03</div>
-              <div class="svc-name">Education & Coaching</div>
-              <p class="svc-desc">Establishing authority through high-impact educational content and brand systems.</p>
+              <div class="svc-name">Event Coverage</div>
+              <p class="svc-desc">Weddings, launches, concerts. Every moment captured before it disappears forever.</p>
             </div>
             <div class="svc-card">
-              <img class="svc-img" src="https://images.unsplash.com/photo-1441996832947-06900f684879?w=400&q=80"
-                alt="Fashion & Retail">
+              <img class="svc-img" src="https://images.unsplash.com/photo-1508444845599-5c89863b1c44?w=400&q=80"
+                alt="Aerial & Drone">
               <div class="svc-num">04</div>
-              <div class="svc-name">Fashion & Retail</div>
-              <p class="svc-desc">Perspectives that redefine your label. Cinematic campaigns for the modern brand.</p>
+              <div class="svc-name">Aerial & Drone</div>
+              <p class="svc-desc">Perspectives that redefine scale. Heights others can't reach, shots no one forgets.
+              </p>
             </div>
             <div class="svc-card">
               <img class="svc-img" src="https://images.unsplash.com/photo-1536240478700-b869ad10e2ab?w=400&q=80"
-                alt="Brand Framework">
+                alt="Post Production">
               <div class="svc-num">05</div>
-              <div class="svc-name">5-Step Framework™</div>
-              <p class="svc-desc">Our structured approach ensuring clarity, consistency, and purpose for every client.</p>
+              <div class="svc-name">Post Production</div>
+              <p class="svc-desc">Color grading, VFX, sound design. The invisible art that turns footage into film.</p>
             </div>
             <div class="svc-card">
               <img class="svc-img" src="https://images.unsplash.com/photo-1611162616475-46b635cb6868?w=400&q=80"
-                alt="Social Presence">
+                alt="Social Content">
               <div class="svc-num">06</div>
-              <div class="svc-name">Social Presence</div>
-              <p class="svc-desc">A 24/7 salesperson for your brand. Organic presence that turns followers into clients.</p>
+              <div class="svc-name">Social Content</div>
+              <p class="svc-desc">Scroll-stopping short-form engineered for maximum impact on every platform.</p>
             </div>
           </div>
         </div>
@@ -1744,11 +1644,13 @@
         <img src="https://images.unsplash.com/photo-1601506521793-dc748fc80b67?w=900&q=80" alt="Behind the scenes">
       </div>
       <div class="about-copy">
-        <span class="s-label">— Our Story</span>
-        <h2 class="s-title">WE ARE<br><em>STORYTELLERS</em></h2>
-        <p>We didn't start as marketers. We started as storytellers. Two passionate filmmakers with a camera, a craft, and an eye for detail that most people couldn't switch off.</p>
-        <p style="margin-top:1rem">AdYouUp Studios was born from a simple but radical belief — every business deserves a strategy built exclusively for them. Not a template. Not a trend. A brand system built from the ground up.</p>
-        <span class="s-pill" style="margin-top:1.6rem;display:inline-block">The Framework →</span>
+        <span class="s-label">— Who We Are</span>
+        <h2 class="s-title">CRAFTED<br>IN <em>KERALA</em></h2>
+        <p>Born from the landscapes of Kerala, shaped by the language of cinema. FrameBreak is a collective of visual
+          storytellers obsessed with the space between reality and art — where a single frame can hold a lifetime.</p>
+        <p style="margin-top:1rem">We've shot on the backwaters of Alleppey, the hills of Munnar, and in the crowded
+          festivals of Thrissur. Each location teaches us something new about light, emotion, and the human story.</p>
+        <span class="s-pill" style="margin-top:1.6rem;display:inline-block">Our Story →</span>
       </div>
     </div>
 
@@ -1770,34 +1672,12 @@
 
     <!-- FOOTER -->
     <footer>
-      <div class="f-logo">ADYOUUP <em>STUDIOS</em></div>
-      <p>© 2026 AdYouUp Studios · Show Up. Stand Out. Scale Up.</p>
+      <div class="f-logo">FRAME<em>BREAK</em></div>
+      <p>© 2025 FrameBreak Studio · All rights reserved</p>
     </footer>
   </div>
 
   <script>
-    /* ══ LOADER ══ */
-    window.addEventListener('load', () => {
-      const bar = document.getElementById('loader-progress');
-      const loader = document.getElementById('loader');
-      let p = 0;
-      const int = setInterval(() => {
-        p += Math.random() * 30;
-        if (p >= 100) {
-          p = 100;
-          clearInterval(int);
-          setTimeout(() => {
-            loader.classList.add('hidden');
-            setTimeout(() => {
-              document.body.classList.add('loaded');
-              onScroll(); // Force initial positions
-            }, 1200);
-          }, 500);
-        }
-        bar.style.width = p + '%';
-      }, 100);
-    });
-
     /* ══ CURSOR ══ */
     const cur = document.getElementById('cur'), ring = document.getElementById('cur-ring');
     let mx = 0, my = 0, rx = 0, ry = 0;
@@ -1891,7 +1771,7 @@
       // texture lines
       for (let y = 120; y < 370; y += 18)svgEl('line', { x1: 80, y1: y, x2: 278, y2: y, stroke: 'rgba(255,255,255,.012)', 'stroke-width': 1 }, p0.svg);
       // brand text
-      svgEl('text', { x: 90, y: 168, fill: '#282828', 'font-family': 'monospace', 'font-size': 9, 'letter-spacing': 3 }, p0.svg).textContent = 'ADYOUUP';
+      svgEl('text', { x: 90, y: 168, fill: '#282828', 'font-family': 'monospace', 'font-size': 9, 'letter-spacing': 3 }, p0.svg).textContent = 'FRAMEBREAK';
       // SD card slot
       svgEl('rect', { x: 76, y: 354, width: 62, height: 22, rx: 4, fill: '#080808', stroke: '#1c1c1c', 'stroke-width': 1 }, p0.svg);
       svgEl('rect', { x: 80, y: 358, width: 54, height: 14, rx: 3, fill: '#0f0f0f', stroke: '#252525', 'stroke-width': .5 }, p0.svg);
@@ -2013,7 +1893,7 @@
       // brand arc text
       svgEl('path', { id: 'arcA', d: 'M 238 196 A 132 132 0 0 1 482 196', fill: 'none' }, p3.svg);
       const at = svgEl('text', { 'font-size': 8.5, 'font-family': 'monospace', fill: '#262626', 'letter-spacing': 4.5 }, p3.svg);
-      svgEl('textPath', { href: '#arcA' }, at).textContent = 'ADYOUUP  ·  50mm  ·  f/1.4  ·  ∅ 72mm';
+      svgEl('textPath', { href: '#arcA' }, at).textContent = 'FRAMEBREAK  ·  50mm  ·  f/1.4  ·  ∅ 72mm';
 
       // ── P4: Mid Aperture Ring ──
       const p4 = mkPiece(container, 'p4');
@@ -2097,7 +1977,7 @@
       svgEl('circle', { cx: 300, cy: 408, r: 10, fill: '#0c0c0c', stroke: '#242424', 'stroke-width': 1.5 }, p7.svg);
       svgEl('text', { x: 296, y: 412, fill: '#2e2e2e', 'font-size': 7, 'font-family': 'monospace' }, p7.svg).textContent = '¼"';
       // serial number
-      svgEl('text', { x: 340, y: 413, fill: '#181818', 'font-size': 7, 'font-family': 'monospace', 'letter-spacing': 1.5 }, p7.svg).textContent = 'AD-2025-00847';
+      svgEl('text', { x: 340, y: 413, fill: '#181818', 'font-size': 7, 'font-family': 'monospace', 'letter-spacing': 1.5 }, p7.svg).textContent = 'FB-2025-00847';
       // battery indicator
       svgEl('rect', { x: 90, y: 400, width: 32, height: 16, rx: 2.5, fill: '#0a0a0a', stroke: '#1e1e1e', 'stroke-width': 1 }, p7.svg);
       svgEl('rect', { x: 122, y: 405, width: 4, height: 6, rx: 1, fill: '#1a1a1a' }, p7.svg);
@@ -2142,7 +2022,16 @@
       return [p0, p1, p2, p3, p4, p5, p6, p7, p8];
     }
 
+    /* ══ CLONE CAMERA INTO HERO ══ */
+    const heroWrap = document.getElementById('cam-hero-wrap');
     const storyRoot = document.getElementById('cam-root');
+
+    const heroDiv = document.createElement('div');
+    heroDiv.style.cssText = 'position:relative;width:100%;height:100%;';
+    heroWrap.appendChild(heroDiv);
+
+    // Build one set in hero (display only, no animation needed)
+    buildCamera(heroDiv);
 
     // Build actual animated set in story section
     const pieces = buildCamera(storyRoot);
@@ -2240,26 +2129,13 @@
         if (ch.panel) document.getElementById(ch.panel)?.classList.add('active');
         const lbl = document.getElementById('chap-label');
         lbl.textContent = ch.label;
-        if (chi === 0) lbl.classList.remove('show'); else lbl.classList.add('show');
-        
-        // Hide/Show side text in hero
-        const sideTxts = document.querySelectorAll('.side-txt');
-        if (chi === 0) sideTxts.forEach(s => s.style.opacity = '0');
-        else sideTxts.forEach(s => s.style.opacity = '0.05');
-
+        lbl.classList.add('show');
         lastCh = chi;
       }
 
       // glow
       const glow = document.getElementById('cam-glow');
-      glow.style.opacity = (0.3 + prog * 0.55).toString(); // Always visible to some degree
-
-      // Adjust camera root position based on scroll progress
-      const camRoot = document.getElementById('cam-root');
-      // Camera stays centered as per user request
-      camRoot.style.left = '50%';
-      camRoot.style.right = 'auto';
-      camRoot.style.transform = 'translate(-50%, -50%)';
+      glow.style.opacity = chi >= 1 ? (0.5 + chP * 0.35).toString() : '0';
 
       // crack
       const crk = mapR(prog, ch.e - 0.06, ch.e, 0, 1) * (1 - mapR(prog, CHAPTERS[1]?.s || 0, CHAPTERS[1]?.s + 0.06 || 0.06, 0, 1));
