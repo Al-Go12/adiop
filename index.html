@@ -1,0 +1,2215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FRAMEBREAK — Cinematic Videography</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Barlow+Condensed:wght@200;300;400;600;700;900&display=swap');
+
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box
+    }
+
+    :root {
+      --bg: #070608;
+      --bg2: #0d0b10;
+      --off: #ede8dd;
+      --red: #c41f18;
+      --gold: #b08a2a;
+      --dim: rgba(237, 232, 221, 0.42);
+      --glass: rgba(237, 232, 221, 0.03);
+    }
+
+    html {
+      scroll-behavior: auto
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--off);
+      font-family: 'Barlow Condensed', sans-serif;
+      overflow-x: hidden;
+      cursor: none
+    }
+
+    /* CURSOR */
+    #cur {
+      position: fixed;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--red);
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      mix-blend-mode: screen;
+      transition: transform .1s
+    }
+
+    #cur-ring {
+      position: fixed;
+      width: 38px;
+      height: 38px;
+      border: 1px solid rgba(176, 138, 42, .45);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: width .3s, height .3s, border-color .3s, opacity .3s
+    }
+
+    body:has(a:hover) #cur-ring,
+    body:has(button:hover) #cur-ring {
+      width: 58px;
+      height: 58px;
+      border-color: var(--gold)
+    }
+
+    /* GRAIN */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.88' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='.038'/%3E%3C/svg%3E");
+      background-size: 220px;
+      pointer-events: none;
+      z-index: 9990;
+      opacity: .55
+    }
+
+    /* PROGRESS */
+    #prog {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 1.5px;
+      background: linear-gradient(90deg, var(--red), var(--gold));
+      width: 0%;
+      z-index: 800;
+      transition: width .07s linear
+    }
+
+    /* AUDIO CONTROL */
+    #audio-btn {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      border: 1px solid rgba(176, 138, 42, .4);
+      background: rgba(7, 6, 8, .85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 700;
+      transition: border-color .3s, background .3s;
+      backdrop-filter: blur(8px);
+    }
+
+    #audio-btn:hover {
+      border-color: var(--gold);
+      background: rgba(20, 15, 5, .9)
+    }
+
+    #audio-btn svg {
+      width: 18px;
+      height: 18px;
+      fill: var(--gold);
+      opacity: .8;
+      transition: opacity .3s
+    }
+
+    #audio-btn:hover svg {
+      opacity: 1
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 1.6rem 4.5vw;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 600;
+      background: linear-gradient(to bottom, rgba(7, 6, 8, .85), transparent);
+      backdrop-filter: blur(3px)
+    }
+
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(17px, 1.8vw, 24px);
+      letter-spacing: .14em;
+      color: var(--off);
+      text-decoration: none
+    }
+
+    .nav-logo em {
+      color: var(--red);
+      font-style: normal
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 2.8rem
+    }
+
+    nav a {
+      font-size: 10px;
+      letter-spacing: .38em;
+      text-transform: uppercase;
+      color: var(--dim);
+      text-decoration: none;
+      transition: color .3s
+    }
+
+    nav a:hover {
+      color: var(--gold)
+    }
+
+    /* ══════════════════════════════
+   HERO
+══════════════════════════════ */
+    #hero {
+      height: 100vh;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding-top: min(12vh, 100px);
+    }
+
+    /* deep vignette */
+    #hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 100% 100% at 50% 50%, transparent 30%, rgba(7, 6, 8, .7) 100%);
+      z-index: 2;
+      pointer-events: none
+    }
+
+    /* subtle grid */
+    .hero-grid-bg {
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(rgba(176, 138, 42, .03) 1px, transparent 1px), linear-gradient(90deg, rgba(176, 138, 42, .03) 1px, transparent 1px);
+      background-size: 80px 80px;
+      pointer-events: none;
+      z-index: 1
+    }
+
+    .hero-text {
+      position: relative;
+      z-index: 5;
+      text-align: center;
+      opacity: 0;
+      animation: rUp .9s .3s forwards;
+    }
+
+    .hero-eyebrow {
+      font-size: 10px;
+      letter-spacing: .65em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 300;
+      margin-bottom: 1.4rem;
+      opacity: .8
+    }
+
+    .hero-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(52px, 9vw, 130px);
+      line-height: .9;
+      letter-spacing: -.01em;
+    }
+
+    .hero-title .r {
+      color: var(--red);
+      display: block
+    }
+
+    .hero-title .s {
+      display: block;
+      -webkit-text-stroke: 1px rgba(237, 232, 221, .2);
+      color: transparent
+    }
+
+    .hero-sub {
+      margin-top: 1.4rem;
+      font-size: 12px;
+      letter-spacing: .45em;
+      color: var(--dim);
+      text-transform: uppercase;
+      font-weight: 300
+    }
+
+    /* CAMERA STAGE — in hero, below text */
+    #cam-hero-wrap {
+      position: relative;
+      z-index: 4;
+      width: min(88vw, 760px);
+      height: min(50vh, 420px);
+      margin-top: min(3vh, 24px);
+      flex-shrink: 0;
+    }
+
+    #cam-hero-wrap .cp {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%
+    }
+
+    #cam-hero-wrap .cp svg {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0
+    }
+
+    .scroll-cue {
+      position: absolute;
+      bottom: 2.2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .7rem;
+      opacity: 0;
+      animation: rUpC .8s 1.5s forwards;
+    }
+
+    .scroll-cue span {
+      font-size: 9px;
+      letter-spacing: .45em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: .65
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 44px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+      animation: scPulse 2.2s infinite
+    }
+
+    @keyframes scPulse {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scaleY(1)
+      }
+
+      50% {
+        opacity: .2;
+        transform: scaleY(.35)
+      }
+    }
+
+    @keyframes rUp {
+      from {
+        opacity: 0;
+        transform: translateY(28px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    @keyframes rUpC {
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(18px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0)
+      }
+    }
+
+    /* ══════════════════════════════
+   SCROLL STORY
+══════════════════════════════ */
+    #story-scroll {
+      position: relative;
+      height: 650vh
+    }
+
+    #story-sticky {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: hidden
+    }
+
+    /* ambient glow center */
+    #cam-glow {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 900px;
+      height: 900px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(196, 31, 24, .14) 0%, rgba(176, 138, 42, .04) 40%, transparent 70%);
+      pointer-events: none;
+      opacity: 0;
+      filter: blur(100px);
+      transition: opacity .8s;
+    }
+
+    /* CAMERA in scroll section */
+    #cam-root {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: min(84vw, 720px);
+      height: min(56vh, 460px);
+      perspective: 1800px;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .cp {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      will-change: transform, opacity, filter;
+      transform-origin: center center;
+      transform-style: preserve-3d
+    }
+
+    .cp svg {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0
+    }
+
+    /* chapter label */
+    #chap-label {
+      position: absolute;
+      top: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 10px;
+      letter-spacing: .55em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0;
+      transition: opacity .6s;
+      white-space: nowrap;
+      z-index: 10;
+      font-weight: 300;
+    }
+
+    #chap-label.show {
+      opacity: .55
+    }
+
+    /* vertical side decorations */
+    .side-txt {
+      position: absolute;
+      font-family: 'Bebas Neue', sans-serif;
+      writing-mode: vertical-rl;
+      font-size: 13px;
+      letter-spacing: .5em;
+      color: rgba(237, 232, 221, .05);
+      pointer-events: none;
+      z-index: 1
+    }
+
+    .side-l {
+      left: 2.2rem;
+      top: 50%;
+      transform: translateY(-50%)
+    }
+
+    .side-r {
+      right: 2.2rem;
+      top: 50%;
+      transform: translateY(-50%) rotate(180deg)
+    }
+
+    /* ── SECTION PANELS ── */
+    .sec-panel {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .7s ease;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      z-index: 2
+    }
+
+    .sec-panel.active {
+      opacity: 1;
+      pointer-events: auto
+    }
+
+    /* reusable type */
+    .s-label {
+      display: block;
+      font-size: 9px;
+      letter-spacing: .6em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 300;
+      opacity: .75;
+      margin-bottom: 1rem
+    }
+
+    .s-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(36px, 5.5vw, 78px);
+      line-height: .9;
+      letter-spacing: .02em
+    }
+
+    .s-title b {
+      color: var(--red);
+      font-weight: inherit
+    }
+
+    .s-title em {
+      color: var(--gold);
+      font-style: normal
+    }
+
+    .s-body {
+      margin-top: 1rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 15px;
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1.85;
+      color: var(--dim)
+    }
+
+    .s-pill {
+      display: inline-block;
+      margin-top: 1.2rem;
+      padding: .45rem 1.4rem;
+      border: 1px solid rgba(176, 138, 42, .32);
+      font-size: 9px;
+      letter-spacing: .35em;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-decoration: none;
+      cursor: pointer;
+      transition: background .3s, color .3s
+    }
+
+    .s-pill:hover {
+      background: var(--gold);
+      color: #000
+    }
+
+    /* ─ PANEL: PORTFOLIO ─ */
+    #panel-portfolio {
+      justify-content: space-between;
+      padding: 0 4vw
+    }
+
+    .port-left {
+      max-width: 340px;
+      opacity: 0;
+      transform: translateX(-40px);
+      transition: opacity .7s .2s, transform .7s .2s
+    }
+
+    #panel-portfolio.active .port-left {
+      opacity: 1;
+      transform: translateX(0)
+    }
+
+    .port-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 5px;
+      width: min(52vw, 580px);
+      opacity: 0;
+      transform: translateX(50px);
+      transition: opacity .7s .3s, transform .7s .3s;
+    }
+
+    #panel-portfolio.active .port-grid {
+      opacity: 1;
+      transform: translateX(0)
+    }
+
+    .port-item {
+      aspect-ratio: 3/2;
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .port-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: grayscale(80%) brightness(.55);
+      transition: filter .55s, transform .65s cubic-bezier(.25, .46, .45, .94)
+    }
+
+    .port-item:hover img {
+      filter: grayscale(10%) brightness(.8);
+      transform: scale(1.08)
+    }
+
+    .port-label {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: .55rem .7rem;
+      background: linear-gradient(to top, rgba(0, 0, 0, .92), transparent);
+      font-size: 9px;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      opacity: 0;
+      transition: opacity .3s
+    }
+
+    .port-item:hover .port-label {
+      opacity: 1
+    }
+
+    /* ─ PANEL: VISION ─ */
+    #panel-vision {
+      justify-content: center;
+      align-items: center;
+      flex-direction: column
+    }
+
+    .vision-ring {
+      width: min(58vw, 520px);
+      height: min(58vw, 520px);
+      border-radius: 50%;
+      border: 1px solid rgba(176, 138, 42, .25);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 3rem;
+      position: relative;
+      opacity: 0;
+      transform: scale(.65);
+      transition: opacity .8s .15s, transform .8s .15s cubic-bezier(.22, 1, .36, 1);
+    }
+
+    #panel-vision.active .vision-ring {
+      opacity: 1;
+      transform: scale(1)
+    }
+
+    .vision-ring::before {
+      content: '';
+      position: absolute;
+      inset: 12px;
+      border-radius: 50%;
+      border: 1px solid rgba(176, 138, 42, .1)
+    }
+
+    .vision-ring::after {
+      content: '';
+      position: absolute;
+      inset: 28px;
+      border-radius: 50%;
+      border: 1px solid rgba(176, 138, 42, .06)
+    }
+
+    .vis-pillars {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.6rem;
+      margin-top: 1.8rem;
+      width: 100%;
+      opacity: 0;
+      transition: opacity .7s .55s
+    }
+
+    #panel-vision.active .vis-pillars {
+      opacity: 1
+    }
+
+    .vp {
+      text-align: left;
+      border-left: 1px solid rgba(176, 138, 42, .38);
+      padding-left: .9rem
+    }
+
+    .vp-n {
+      font-size: 8px;
+      color: var(--gold);
+      letter-spacing: .35em;
+      margin-bottom: .3rem
+    }
+
+    .vp-t {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      margin-bottom: .25rem
+    }
+
+    .vp-d {
+      font-size: 11px;
+      font-weight: 300;
+      color: var(--dim);
+      line-height: 1.65;
+      letter-spacing: .04em
+    }
+
+    /* ─ PANEL: SERVICES ─ */
+    #panel-services {
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      padding: 0 5vw
+    }
+
+    .svc-wrap {
+      width: 100%;
+      opacity: 0;
+      transform: translateY(36px);
+      transition: opacity .7s .2s, transform .7s .2s cubic-bezier(.22, 1, .36, 1)
+    }
+
+    #panel-services.active .svc-wrap {
+      opacity: 1;
+      transform: translateY(0)
+    }
+
+    .svc-head {
+      text-align: center;
+      margin-bottom: 2rem
+    }
+
+    .svc-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: rgba(237, 232, 221, .05)
+    }
+
+    @media(max-width:700px) {
+      .svc-grid {
+        grid-template-columns: 1fr
+      }
+    }
+
+    .svc-card {
+      background: var(--bg);
+      padding: 2.4rem 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: background .4s
+    }
+
+    .svc-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--red);
+      transform: translateY(101%);
+      transition: transform .5s cubic-bezier(.76, 0, .24, 1)
+    }
+
+    .svc-card>* {
+      position: relative;
+      z-index: 1
+    }
+
+    .svc-card:hover::before {
+      transform: translateY(0)
+    }
+
+    .svc-card:hover .svc-name,
+    .svc-card:hover .svc-desc {
+      color: #fff
+    }
+
+    .svc-img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      filter: grayscale(70%) brightness(.55);
+      margin-bottom: 1rem;
+      transition: filter .4s
+    }
+
+    .svc-card:hover .svc-img {
+      filter: grayscale(0%) brightness(.75)
+    }
+
+    .svc-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 40px;
+      color: rgba(237, 232, 221, .04);
+      line-height: 1
+    }
+
+    .svc-name {
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      margin-bottom: .5rem;
+      transition: color .3s
+    }
+
+    .svc-desc {
+      font-size: 11px;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--dim);
+      letter-spacing: .04em;
+      transition: color .3s
+    }
+
+    /* ─ PANEL: TEAM ─ */
+    #panel-team {
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      gap: 2rem
+    }
+
+    .team-head {
+      text-align: center;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity .6s .1s, transform .6s .1s
+    }
+
+    #panel-team.active .team-head {
+      opacity: 1;
+      transform: translateY(0)
+    }
+
+    .team-row {
+      display: flex;
+      gap: 4px;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity .8s .3s, transform .8s .3s cubic-bezier(.22, 1, .36, 1)
+    }
+
+    #panel-team.active .team-row {
+      opacity: 1;
+      transform: translateY(0)
+    }
+
+    .t-frame {
+      width: clamp(110px, 13vw, 185px);
+      aspect-ratio: 3/4;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer
+    }
+
+    .t-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: grayscale(90%) brightness(.5);
+      transition: filter .5s, transform .6s cubic-bezier(.25, .46, .45, .94)
+    }
+
+    .t-frame:hover img {
+      filter: grayscale(10%) brightness(.75);
+      transform: scale(1.05)
+    }
+
+    .t-info {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: .9rem .8rem;
+      background: linear-gradient(to top, rgba(0, 0, 0, .95), transparent);
+      opacity: 0;
+      transition: opacity .35s
+    }
+
+    .t-frame:hover .t-info {
+      opacity: 1
+    }
+
+    .t-name {
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: .14em;
+      text-transform: uppercase
+    }
+
+    .t-role {
+      font-size: 9px;
+      color: var(--gold);
+      letter-spacing: .25em;
+      margin-top: .2rem
+    }
+
+    /* VF brackets */
+    .vf-tl,
+    .vf-tr,
+    .vf-bl,
+    .vf-br {
+      position: absolute;
+      width: 70px;
+      height: 70px;
+      opacity: 0;
+      transition: opacity .6s .5s
+    }
+
+    #panel-team.active .vf-tl,
+    #panel-team.active .vf-tr,
+    #panel-team.active .vf-bl,
+    #panel-team.active .vf-br {
+      opacity: .35
+    }
+
+    .vf-tl {
+      top: 8%;
+      left: 3%;
+      border-top: 1px solid var(--gold);
+      border-left: 1px solid var(--gold)
+    }
+
+    .vf-tr {
+      top: 8%;
+      right: 3%;
+      border-top: 1px solid var(--gold);
+      border-right: 1px solid var(--gold)
+    }
+
+    .vf-bl {
+      bottom: 8%;
+      left: 3%;
+      border-bottom: 1px solid var(--gold);
+      border-left: 1px solid var(--gold)
+    }
+
+    .vf-br {
+      bottom: 8%;
+      right: 3%;
+      border-bottom: 1px solid var(--gold);
+      border-right: 1px solid var(--gold)
+    }
+
+    /* ─ PANEL: CTA ─ */
+    #panel-cta {
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      text-align: center
+    }
+
+    .cta-inner {
+      opacity: 0;
+      transform: scale(.93) translateY(30px);
+      transition: opacity .85s .2s, transform .85s .2s cubic-bezier(.22, 1, .36, 1);
+      max-width: 620px;
+      padding: 0 2rem
+    }
+
+    #panel-cta.active .cta-inner {
+      opacity: 1;
+      transform: scale(1) translateY(0)
+    }
+
+    .cta-big {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(58px, 10vw, 140px);
+      line-height: .86;
+      letter-spacing: -.01em
+    }
+
+    .cta-big em {
+      color: var(--red);
+      font-style: normal
+    }
+
+    /* ══════════════════════════════
+   AFTER SCROLL
+══════════════════════════════ */
+    #after-scroll {
+      position: relative;
+      background: var(--bg);
+      z-index: 2
+    }
+
+    /* STATS */
+    #stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid rgba(237, 232, 221, .06);
+      border-bottom: 1px solid rgba(237, 232, 221, .06);
+      background: rgba(237, 232, 221, .02)
+    }
+
+    @media(max-width:700px) {
+      #stats-row {
+        grid-template-columns: 1fr 1fr
+      }
+    }
+
+    .stat-box {
+      padding: 3.5rem 2.2rem;
+      border-right: 1px solid rgba(237, 232, 221, .04)
+    }
+
+    .stat-box:last-child {
+      border-right: none
+    }
+
+    .stat-val {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(46px, 5vw, 68px);
+      line-height: 1
+    }
+
+    .stat-val em {
+      color: var(--red);
+      font-style: normal
+    }
+
+    .stat-lbl {
+      font-size: 10px;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin-top: .4rem;
+      font-weight: 300
+    }
+
+    /* REEL */
+    #reel {
+      padding: 5rem 0;
+      overflow: hidden;
+      border-bottom: 1px solid rgba(237, 232, 221, .04)
+    }
+
+    .r-row {
+      display: flex;
+      gap: 8px;
+      width: max-content
+    }
+
+    .r-row.fwd {
+      animation: mq 26s linear infinite
+    }
+
+    .r-row.rev {
+      animation: mq 34s linear infinite reverse;
+      margin-top: 8px
+    }
+
+    @keyframes mq {
+      from {
+        transform: translateX(0)
+      }
+
+      to {
+        transform: translateX(-50%)
+      }
+    }
+
+    .r-row:hover {
+      animation-play-state: paused
+    }
+
+    .r-tile {
+      width: clamp(170px, 19vw, 290px);
+      height: clamp(100px, 11vw, 170px);
+      flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer
+    }
+
+    .r-tile img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: grayscale(80%) brightness(.5);
+      transition: filter .5s, transform .65s
+    }
+
+    .r-tile:hover img {
+      filter: grayscale(0%) brightness(.8);
+      transform: scale(1.07)
+    }
+
+    .r-tile::after {
+      content: attr(data-t);
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: .6rem .8rem;
+      background: linear-gradient(to top, rgba(0, 0, 0, .92), transparent);
+      font-size: 9px;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      opacity: 0;
+      transition: opacity .3s
+    }
+
+    .r-tile:hover::after {
+      opacity: 1
+    }
+
+    /* ABOUT STRIP */
+    #about-strip {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border-top: 1px solid rgba(237, 232, 221, .06);
+    }
+
+    @media(max-width:800px) {
+      #about-strip {
+        grid-template-columns: 1fr
+      }
+    }
+
+    .about-img {
+      position: relative;
+      overflow: hidden;
+      min-height: 400px
+    }
+
+    .about-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: grayscale(60%) brightness(.65);
+      transition: filter 1s
+    }
+
+    .about-img:hover img {
+      filter: grayscale(20%) brightness(.8)
+    }
+
+    .about-copy {
+      padding: 5rem 4rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-left: 1px solid rgba(237, 232, 221, .05)
+    }
+
+    .about-copy p {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 17px;
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1.9;
+      color: var(--dim);
+      margin-top: 1.2rem
+    }
+
+    /* CONTACT */
+    #contact {
+      padding: 8rem 5vw;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7rem;
+      align-items: start;
+      border-top: 1px solid rgba(237, 232, 221, .06)
+    }
+
+    @media(max-width:800px) {
+      #contact {
+        grid-template-columns: 1fr;
+        gap: 3.5rem
+      }
+    }
+
+    .c-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(50px, 7.5vw, 110px);
+      line-height: .88
+    }
+
+    .c-title em {
+      color: var(--red);
+      font-style: normal
+    }
+
+    .c-body {
+      margin-top: 1.8rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1.85;
+      color: var(--dim);
+      max-width: 340px
+    }
+
+    .c-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.3rem;
+      padding-top: .3rem
+    }
+
+    .cin {
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(237, 232, 221, .14);
+      padding: .85rem 0;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--off);
+      outline: none;
+      transition: border-color .3s;
+      width: 100%;
+      letter-spacing: .06em
+    }
+
+    .cin::placeholder {
+      color: rgba(237, 232, 221, .22);
+      letter-spacing: .1em;
+      font-size: 13px
+    }
+
+    .cin:focus {
+      border-color: var(--gold)
+    }
+
+    .c-btn {
+      margin-top: .5rem;
+      background: transparent;
+      color: var(--off);
+      border: 1px solid rgba(237, 232, 221, .2);
+      padding: 1rem 2.4rem;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: .32em;
+      text-transform: uppercase;
+      cursor: pointer;
+      align-self: flex-start;
+      position: relative;
+      overflow: hidden;
+      transition: border-color .3s, color .3s
+    }
+
+    .c-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--red);
+      transform: translateX(-101%);
+      transition: transform .45s cubic-bezier(.76, 0, .24, 1)
+    }
+
+    .c-btn:hover {
+      border-color: var(--red);
+      color: #fff
+    }
+
+    .c-btn:hover::before {
+      transform: translateX(0)
+    }
+
+    .c-btn span {
+      position: relative;
+      z-index: 1
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 2.2rem 4.5vw;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid rgba(237, 232, 221, .05)
+    }
+
+    .f-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      letter-spacing: .1em
+    }
+
+    .f-logo em {
+      color: var(--red);
+      font-style: normal
+    }
+
+    footer p {
+      font-size: 10px;
+      color: rgba(237, 232, 221, .18);
+      letter-spacing: .2em
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="cur"></div>
+  <div id="cur-ring"></div>
+  <div id="prog"></div>
+
+  <!-- AUDIO -->
+  <audio id="bg-audio" loop preload="auto">
+    <source src="https://www.bensound.com/bensound-music/bensound-slowmotion.mp3" type="audio/mpeg">
+    <source src="https://cdn.pixabay.com/audio/2022/08/04/audio_2dde668d05.mp3" type="audio/mpeg">
+  </audio>
+  <button id="audio-btn" title="Toggle music">
+    <svg id="audio-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
+    </svg>
+  </button>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo">FRAME<em>BREAK</em></a>
+    <ul>
+      <li><a href="#after-scroll">Work</a></li>
+      <li><a href="#reel">Reel</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- ══ HERO ══ -->
+  <section id="hero">
+    <div class="hero-grid-bg"></div>
+
+    <!-- TEXT first -->
+    <div class="hero-text">
+      <p class="hero-eyebrow">Cinematic Videography &nbsp;·&nbsp; Est. 2018</p>
+      <h1 class="hero-title">
+        WE
+        <span class="r">BREAK</span>
+        <span class="s">FRAMES</span>
+      </h1>
+      <p class="hero-sub">Motion &nbsp;·&nbsp; Story &nbsp;·&nbsp; Emotion</p>
+    </div>
+
+    <!-- CAMERA below text -->
+    <div id="cam-hero-wrap"></div>
+
+    <div class="scroll-cue">
+      <span>Scroll to dismantle</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ══ SCROLL STORY ══ -->
+  <div id="story-scroll">
+    <div id="story-sticky">
+      <div id="cam-glow"></div>
+      <span class="side-txt side-l">FRAMEBREAK STUDIO</span>
+      <span class="side-txt side-r">MOTION · STORY · EMOTION</span>
+      <div id="chap-label">— The Camera —</div>
+
+      <!-- Camera pieces injected by JS -->
+      <div id="cam-root"></div>
+
+      <!-- PANEL 1: PORTFOLIO -->
+      <div class="sec-panel" id="panel-portfolio">
+        <div class="port-left">
+          <span class="s-label">— 01 / Selected Work</span>
+          <h2 class="s-title">OUR<br><b>WORK</b><br><em>SPEAKS</em></h2>
+          <p class="s-body">Every frame a decision.<br>Every edit a statement.<br>Every film a legacy.</p>
+          <span class="s-pill">View Full Portfolio →</span>
+        </div>
+        <div class="port-grid">
+          <div class="port-item">
+            <img src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=400&q=80" alt="Brand Campaign"
+              loading="lazy">
+            <div class="port-label">Brand Campaign</div>
+          </div>
+          <div class="port-item">
+            <img src="https://images.unsplash.com/photo-1576020799627-aeac74d58064?w=400&q=80" alt="Fashion Film"
+              loading="lazy">
+            <div class="port-label">Fashion Film</div>
+          </div>
+          <div class="port-item">
+            <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=400&q=80" alt="Documentary"
+              loading="lazy">
+            <div class="port-label">Documentary</div>
+          </div>
+          <div class="port-item">
+            <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=400&q=80" alt="Wedding Story"
+              loading="lazy">
+            <div class="port-label">Wedding Story</div>
+          </div>
+          <div class="port-item">
+            <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&q=80" alt="Music Video"
+              loading="lazy">
+            <div class="port-label">Music Video</div>
+          </div>
+          <div class="port-item">
+            <img src="https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=400&q=80" alt="Aerial Reel"
+              loading="lazy">
+            <div class="port-label">Aerial Reel</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANEL 2: VISION -->
+      <div class="sec-panel" id="panel-vision">
+        <div class="vision-ring">
+          <span class="s-label">— 02 / Our Mission</span>
+          <h2 class="s-title" style="font-size:clamp(28px,4vw,56px)">VISION<br><em>THROUGH</em><br><b>THE LENS</b></h2>
+          <p class="s-body" style="font-size:13px;margin-top:.7rem">We don't just shoot video.<br>We architect emotion,
+            frame by frame.</p>
+          <div class="vis-pillars">
+            <div class="vp">
+              <div class="vp-n">01</div>
+              <div class="vp-t">Precision</div>
+              <div class="vp-d">Every shot calculated. Every light intentional.</div>
+            </div>
+            <div class="vp">
+              <div class="vp-n">02</div>
+              <div class="vp-t">Feeling</div>
+              <div class="vp-d">Technical mastery in service of raw emotion.</div>
+            </div>
+            <div class="vp">
+              <div class="vp-n">03</div>
+              <div class="vp-t">Story</div>
+              <div class="vp-d">Narrative first. Equipment second. Always.</div>
+            </div>
+            <div class="vp">
+              <div class="vp-n">04</div>
+              <div class="vp-t">Legacy</div>
+              <div class="vp-d">Films that outlast the moment they were made.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANEL 3: SERVICES -->
+      <div class="sec-panel" id="panel-services">
+        <div class="svc-wrap">
+          <div class="svc-head">
+            <span class="s-label">— 03 / What We Create</span>
+            <h2 class="s-title" style="font-size:clamp(44px,7vw,90px)">THE ART<br>OF <b>MOTION</b></h2>
+          </div>
+          <div class="svc-grid">
+            <div class="svc-card">
+              <img class="svc-img" src="https://images.unsplash.com/photo-1616469829167-0bd76a80c913?w=400&q=80"
+                alt="Cinematic Films">
+              <div class="svc-num">01</div>
+              <div class="svc-name">Cinematic Films</div>
+              <p class="svc-desc">Feature-grade production for brands and storytellers who demand the extraordinary.</p>
+            </div>
+            <div class="svc-card">
+              <img class="svc-img" src="https://images.unsplash.com/photo-1574717024453-354056adbbc4?w=400&q=80"
+                alt="Commercial Video">
+              <div class="svc-num">02</div>
+              <div class="svc-name">Commercial Video</div>
+              <p class="svc-desc">High-impact content that converts viewers into believers and believers into buyers.
+              </p>
+            </div>
+            <div class="svc-card">
+              <img class="svc-img" src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400&q=80"
+                alt="Event Coverage">
+              <div class="svc-num">03</div>
+              <div class="svc-name">Event Coverage</div>
+              <p class="svc-desc">Weddings, launches, concerts. Every moment captured before it disappears forever.</p>
+            </div>
+            <div class="svc-card">
+              <img class="svc-img" src="https://images.unsplash.com/photo-1508444845599-5c89863b1c44?w=400&q=80"
+                alt="Aerial & Drone">
+              <div class="svc-num">04</div>
+              <div class="svc-name">Aerial & Drone</div>
+              <p class="svc-desc">Perspectives that redefine scale. Heights others can't reach, shots no one forgets.
+              </p>
+            </div>
+            <div class="svc-card">
+              <img class="svc-img" src="https://images.unsplash.com/photo-1536240478700-b869ad10e2ab?w=400&q=80"
+                alt="Post Production">
+              <div class="svc-num">05</div>
+              <div class="svc-name">Post Production</div>
+              <p class="svc-desc">Color grading, VFX, sound design. The invisible art that turns footage into film.</p>
+            </div>
+            <div class="svc-card">
+              <img class="svc-img" src="https://images.unsplash.com/photo-1611162616475-46b635cb6868?w=400&q=80"
+                alt="Social Content">
+              <div class="svc-num">06</div>
+              <div class="svc-name">Social Content</div>
+              <p class="svc-desc">Scroll-stopping short-form engineered for maximum impact on every platform.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANEL 4: TEAM -->
+      <div class="sec-panel" id="panel-team">
+        <div class="vf-tl"></div>
+        <div class="vf-tr"></div>
+        <div class="vf-bl"></div>
+        <div class="vf-br"></div>
+        <div class="team-head">
+          <span class="s-label">— 04 / The Crew</span>
+          <h2 class="s-title">BEHIND<br>THE <b>LENS</b></h2>
+        </div>
+        <div class="team-row">
+          <div class="t-frame">
+            <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300&q=80" alt="Arjun Nair">
+            <div class="t-info">
+              <div class="t-name">Arjun Nair</div>
+              <div class="t-role">Director · DP</div>
+            </div>
+          </div>
+          <div class="t-frame">
+            <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=300&q=80" alt="Priya Menon">
+            <div class="t-info">
+              <div class="t-name">Priya Menon</div>
+              <div class="t-role">Editor · Colorist</div>
+            </div>
+          </div>
+          <div class="t-frame">
+            <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=300&q=80" alt="Rahul Dev">
+            <div class="t-info">
+              <div class="t-name">Rahul Dev</div>
+              <div class="t-role">Drone · Camera Op</div>
+            </div>
+          </div>
+          <div class="t-frame">
+            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=300&q=80" alt="Meera Raj">
+            <div class="t-info">
+              <div class="t-name">Meera Raj</div>
+              <div class="t-role">Sound · VFX</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANEL 5: CTA -->
+      <div class="sec-panel" id="panel-cta">
+        <div class="cta-inner">
+          <span class="s-label">— 05 / Begin Your Story</span>
+          <div class="cta-big">LET'S<br>MAKE<br><em>NOISE</em></div>
+          <p class="s-body" style="margin-top:1.4rem;font-size:16px">Have a vision that needs to be felt?<br>We
+            translate ideas into cinematic experiences<br>that linger long after the screen goes dark.</p>
+          <a href="#contact" class="s-pill" style="margin-top:2rem;font-size:10px">Start a Conversation →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ AFTER SCROLL ══ -->
+  <div id="after-scroll">
+
+    <!-- STATS -->
+    <div id="stats-row">
+      <div class="stat-box">
+        <div class="stat-val">320<em>+</em></div>
+        <div class="stat-lbl">Projects Delivered</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val">14<em>M</em></div>
+        <div class="stat-lbl">Views Generated</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val">8<em>yr</em></div>
+        <div class="stat-lbl">Years of Craft</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val">26<em>+</em></div>
+        <div class="stat-lbl">Award Wins</div>
+      </div>
+    </div>
+
+    <!-- REEL -->
+    <section id="reel">
+      <div style="overflow:hidden">
+        <div class="r-row fwd">
+          <div class="r-tile" data-t="Brand Campaign"><img
+              src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=350&q=70" alt="Brand" loading="lazy">
+          </div>
+          <div class="r-tile" data-t="Fashion Film"><img
+              src="https://images.unsplash.com/photo-1576020799627-aeac74d58064?w=350&q=70" alt="Fashion"
+              loading="lazy"></div>
+          <div class="r-tile" data-t="Documentary"><img
+              src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=350&q=70" alt="Doc" loading="lazy">
+          </div>
+          <div class="r-tile" data-t="Wedding Story"><img
+              src="https://images.unsplash.com/photo-1519741497674-611481863552?w=350&q=70" alt="Wedding"
+              loading="lazy"></div>
+          <div class="r-tile" data-t="Music Video"><img
+              src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=350&q=70" alt="Music" loading="lazy">
+          </div>
+          <div class="r-tile" data-t="Aerial Reel"><img
+              src="https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=350&q=70" alt="Aerial" loading="lazy">
+          </div>
+          <!-- dupe -->
+          <div class="r-tile" data-t="Brand Campaign"><img
+              src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=350&q=70" alt="Brand" loading="lazy">
+          </div>
+          <div class="r-tile" data-t="Fashion Film"><img
+              src="https://images.unsplash.com/photo-1576020799627-aeac74d58064?w=350&q=70" alt="Fashion"
+              loading="lazy"></div>
+          <div class="r-tile" data-t="Documentary"><img
+              src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=350&q=70" alt="Doc" loading="lazy">
+          </div>
+          <div class="r-tile" data-t="Wedding Story"><img
+              src="https://images.unsplash.com/photo-1519741497674-611481863552?w=350&q=70" alt="Wedding"
+              loading="lazy"></div>
+          <div class="r-tile" data-t="Music Video"><img
+              src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=350&q=70" alt="Music" loading="lazy">
+          </div>
+          <div class="r-tile" data-t="Aerial Reel"><img
+              src="https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=350&q=70" alt="Aerial" loading="lazy">
+          </div>
+        </div>
+        <div class="r-row rev">
+          <div class="r-tile" data-t="Corporate"><img
+              src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=350&q=70" alt="Corporate" loading="lazy">
+          </div>
+          <div class="r-tile" data-t="Short Film"><img
+              src="https://images.unsplash.com/photo-1535016120720-40c646be5580?w=350&q=70" alt="Short Film"
+              loading="lazy"></div>
+          <div class="r-tile" data-t="Product Launch"><img
+              src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=350&q=70" alt="Product" loading="lazy">
+          </div>
+          <div class="r-tile" data-t="Travel Film"><img
+              src="https://images.unsplash.com/photo-1488085061387-422e29b40080?w=350&q=70" alt="Travel" loading="lazy">
+          </div>
+          <div class="r-tile" data-t="Sports Reel"><img
+              src="https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?w=350&q=70" alt="Sports" loading="lazy">
+          </div>
+          <div class="r-tile" data-t="Concert Film"><img
+              src="https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?w=350&q=70" alt="Concert"
+              loading="lazy"></div>
+          <!-- dupe -->
+          <div class="r-tile" data-t="Corporate"><img
+              src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=350&q=70" alt="Corporate" loading="lazy">
+          </div>
+          <div class="r-tile" data-t="Short Film"><img
+              src="https://images.unsplash.com/photo-1535016120720-40c646be5580?w=350&q=70" alt="Short Film"
+              loading="lazy"></div>
+          <div class="r-tile" data-t="Product Launch"><img
+              src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=350&q=70" alt="Product" loading="lazy">
+          </div>
+          <div class="r-tile" data-t="Travel Film"><img
+              src="https://images.unsplash.com/photo-1488085061387-422e29b40080?w=350&q=70" alt="Travel" loading="lazy">
+          </div>
+          <div class="r-tile" data-t="Sports Reel"><img
+              src="https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?w=350&q=70" alt="Sports" loading="lazy">
+          </div>
+          <div class="r-tile" data-t="Concert Film"><img
+              src="https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?w=350&q=70" alt="Concert"
+              loading="lazy"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT STRIP -->
+    <div id="about-strip">
+      <div class="about-img">
+        <img src="https://images.unsplash.com/photo-1601506521793-dc748fc80b67?w=900&q=80" alt="Behind the scenes">
+      </div>
+      <div class="about-copy">
+        <span class="s-label">— Who We Are</span>
+        <h2 class="s-title">CRAFTED<br>IN <em>KERALA</em></h2>
+        <p>Born from the landscapes of Kerala, shaped by the language of cinema. FrameBreak is a collective of visual
+          storytellers obsessed with the space between reality and art — where a single frame can hold a lifetime.</p>
+        <p style="margin-top:1rem">We've shot on the backwaters of Alleppey, the hills of Munnar, and in the crowded
+          festivals of Thrissur. Each location teaches us something new about light, emotion, and the human story.</p>
+        <span class="s-pill" style="margin-top:1.6rem;display:inline-block">Our Story →</span>
+      </div>
+    </div>
+
+    <!-- CONTACT -->
+    <section id="contact">
+      <div>
+        <h2 class="c-title">LET'S<br>MAKE<br><em>NOISE</em></h2>
+        <p class="c-body">Have a vision that needs to be felt? We translate ideas into cinematic experiences that linger
+          long after the screen goes dark.</p>
+      </div>
+      <div class="c-form">
+        <input class="cin" type="text" placeholder="Your Name">
+        <input class="cin" type="email" placeholder="Email Address">
+        <input class="cin" type="text" placeholder="Project Type">
+        <textarea class="cin" rows="4" placeholder="Tell us about your vision…" style="resize:none"></textarea>
+        <button class="c-btn"><span>Send the Brief →</span></button>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="f-logo">FRAME<em>BREAK</em></div>
+      <p>© 2025 FrameBreak Studio · All rights reserved</p>
+    </footer>
+  </div>
+
+  <script>
+    /* ══ CURSOR ══ */
+    const cur = document.getElementById('cur'), ring = document.getElementById('cur-ring');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cur.style.left = mx + 'px'; cur.style.top = my + 'px' });
+    (function loop() { rx += (mx - rx) * .09; ry += (my - ry) * .09; ring.style.left = rx + 'px'; ring.style.top = ry + 'px'; requestAnimationFrame(loop) })();
+
+    /* ══ PROGRESS ══ */
+    window.addEventListener('scroll', () => { const s = scrollY, h = document.documentElement.scrollHeight - innerHeight; document.getElementById('prog').style.width = (s / h * 100) + '%' }, { passive: true });
+
+    /* ══ AUDIO ══ */
+    const audio = document.getElementById('bg-audio');
+    const audioBtn = document.getElementById('audio-btn');
+    const audioIcon = document.getElementById('audio-icon');
+    audio.volume = 0.22;
+    let audioStarted = false;
+
+    const muteIcon = `<path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>`;
+    const playIcon = `<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>`;
+
+    function startAudio() {
+      if (!audioStarted) {
+        audio.play().catch(() => { });
+        audioStarted = true;
+      }
+    }
+
+    audioBtn.addEventListener('click', () => {
+      if (audio.paused) {
+        audio.play().catch(() => { });
+        audioIcon.innerHTML = playIcon;
+        audioBtn.style.borderColor = 'rgba(176,138,42,.6)';
+      } else {
+        audio.pause();
+        audioIcon.innerHTML = muteIcon;
+        audioBtn.style.borderColor = 'rgba(237,232,221,.2)';
+      }
+    });
+
+    // Try autoplay on first scroll
+    window.addEventListener('scroll', startAudio, { once: true, passive: true });
+
+    /* ══ BUILD CAMERA SVG ══ */
+    const SVG_NS = 'http://www.w3.org/2000/svg';
+
+    function svgEl(tag, attrs, parent) {
+      const e = document.createElementNS(SVG_NS, tag);
+      for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+      if (parent) parent.appendChild(e);
+      return e;
+    }
+
+    function mkDefs(svg) { let d = svg.querySelector('defs'); if (!d) { d = svgEl('defs', {}, svg) } return d }
+
+    function lgrad(svg, id, x1, y1, x2, y2, stops) {
+      const d = mkDefs(svg);
+      const g = svgEl('linearGradient', { id, x1, y1, x2, y2, 'gradientUnits': 'objectBoundingBox' }, d);
+      stops.forEach(([o, c]) => svgEl('stop', { offset: o, 'stop-color': c }, g));
+      return `url(#${id})`;
+    }
+
+    function rgrad(svg, id, cx, cy, r, stops) {
+      const d = mkDefs(svg);
+      const g = svgEl('radialGradient', { id, cx, cy, r, 'gradientUnits': 'objectBoundingBox' }, d);
+      stops.forEach(([o, c]) => svgEl('stop', { offset: o, 'stop-color': c }, g));
+      return `url(#${id})`;
+    }
+
+    function mkPiece(container, id) {
+      const div = document.createElement('div');
+      div.className = 'cp'; div.id = id;
+      const svg = document.createElementNS(SVG_NS, 'svg');
+      svg.setAttribute('viewBox', '0 0 720 520');
+      svg.setAttribute('xmlns', SVG_NS);
+      div.appendChild(svg);
+      container.appendChild(div);
+      return { el: div, svg };
+    }
+
+    function buildCamera(container) {
+      // ── P0: Body Left ──
+      const p0 = mkPiece(container, 'p0');
+      const bL = lgrad(p0.svg, 'bL', '0', '0', '1', '1', [['0%', '#303030'], ['50%', '#1a1a1a'], ['100%', '#0e0e0e']]);
+      svgEl('clipPath', { id: 'cpL' }, p0.svg).appendChild(svgEl('rect', { x: 60, y: 88, width: 242, height: 314 }));
+      // main body
+      svgEl('rect', { x: 60, y: 88, width: 242, height: 314, rx: 14, fill: bL, stroke: '#333', 'stroke-width': 1.5 }, p0.svg);
+      // edge highlight
+      svgEl('rect', { x: 61, y: 89, width: 4, height: 312, rx: 2, fill: 'rgba(255,255,255,.06)' }, p0.svg);
+      svgEl('rect', { x: 62, y: 90, width: 238, height: 310, rx: 12, fill: 'none', stroke: 'rgba(255,255,255,.04)', 'stroke-width': 1 }, p0.svg);
+      // inner panel recess
+      svgEl('rect', { x: 76, y: 106, width: 206, height: 278, rx: 8, fill: '#0a0a0a', stroke: '#1e1e1e', 'stroke-width': 1 }, p0.svg);
+      // texture lines
+      for (let y = 120; y < 370; y += 18)svgEl('line', { x1: 80, y1: y, x2: 278, y2: y, stroke: 'rgba(255,255,255,.012)', 'stroke-width': 1 }, p0.svg);
+      // brand text
+      svgEl('text', { x: 90, y: 168, fill: '#282828', 'font-family': 'monospace', 'font-size': 9, 'letter-spacing': 3 }, p0.svg).textContent = 'FRAMEBREAK';
+      // SD card slot
+      svgEl('rect', { x: 76, y: 354, width: 62, height: 22, rx: 4, fill: '#080808', stroke: '#1c1c1c', 'stroke-width': 1 }, p0.svg);
+      svgEl('rect', { x: 80, y: 358, width: 54, height: 14, rx: 3, fill: '#0f0f0f', stroke: '#252525', 'stroke-width': .5 }, p0.svg);
+      svgEl('line', { x1: 82, y1: 365, x2: 130, y2: 365, stroke: '#181818', 'stroke-width': 1 }, p0.svg);
+      svgEl('text', { x: 82, y: 376, fill: '#1a1a1a', 'font-family': 'monospace', 'font-size': 6, 'letter-spacing': 1 }, p0.svg).textContent = 'SD/CFe';
+      // USB-C port
+      svgEl('rect', { x: 148, y: 354, width: 42, height: 22, rx: 4, fill: '#080808', stroke: '#1c1c1c', 'stroke-width': 1 }, p0.svg);
+      svgEl('ellipse', { cx: 169, cy: 365, rx: 8, ry: 5, fill: 'none', stroke: '#222', 'stroke-width': 1 }, p0.svg);
+      // screws
+      [[76, 104], [76, 392], [290, 104], [290, 392]].forEach(([cx, cy]) => {
+        svgEl('circle', { cx, cy, r: 5, fill: '#151515', stroke: '#2e2e2e', 'stroke-width': 1 }, p0.svg);
+        svgEl('line', { x1: cx - 3, y1: cy, x2: cx + 3, y2: cy, stroke: '#383838', 'stroke-width': .9 }, p0.svg);
+        svgEl('line', { x1: cx, y1: cy - 3, x2: cx, y2: cy + 3, stroke: '#383838', 'stroke-width': .9 }, p0.svg);
+      });
+      // lens mount cutout  
+      svgEl('circle', { cx: 360, cy: 270, r: 132, 'clip-path': 'url(#cpL)', fill: '#141414', stroke: '#282828', 'stroke-width': 2 }, p0.svg);
+      svgEl('circle', { cx: 360, cy: 270, r: 108, 'clip-path': 'url(#cpL)', fill: '#0e0e0e', stroke: '#2a2a2a', 'stroke-width': 1.5 }, p0.svg);
+      // bayonet dots on left
+      svgEl('circle', { cx: 240, cy: 270, r: 7, 'clip-path': 'url(#cpL)', fill: '#b08a2a', opacity: .7 }, p0.svg);
+
+      // ── P1: Body Right ──
+      const p1 = mkPiece(container, 'p1');
+      const bR = lgrad(p1.svg, 'bR', '1', '0', '0', '1', [['0%', '#2c2c2c'], ['50%', '#181818'], ['100%', '#0c0c0c']]);
+      const gG = lgrad(p1.svg, 'gG', '0', '0', '1', '0', [['0%', '#1e1e1e'], ['100%', '#0e0e0e']]);
+      svgEl('clipPath', { id: 'cpR' }, p1.svg).appendChild(svgEl('rect', { x: 298, y: 88, width: 242, height: 314 }));
+      svgEl('rect', { x: 298, y: 88, width: 242, height: 314, rx: 14, fill: bR, stroke: '#333', 'stroke-width': 1.5 }, p1.svg);
+      // edge highlight right
+      svgEl('rect', { x: 534, y: 89, width: 4, height: 312, rx: 2, fill: 'rgba(255,255,255,.04)' }, p1.svg);
+      svgEl('rect', { x: 300, y: 90, width: 238, height: 310, rx: 12, fill: 'none', stroke: 'rgba(255,255,255,.03)', 'stroke-width': 1 }, p1.svg);
+      // grip
+      svgEl('rect', { x: 500, y: 98, width: 42, height: 248, rx: 12, fill: gG, stroke: '#1a1a1a', 'stroke-width': 1 }, p1.svg);
+      // grip knurling
+      for (let y = 112; y <= 330; y += 8)svgEl('line', { x1: 504, y1: y, x2: 537, y2: y, stroke: 'rgba(0,0,0,.5)', 'stroke-width': 2 }, p1.svg);
+      for (let y = 116; y <= 330; y += 8)svgEl('line', { x1: 504, y1: y, x2: 537, y2: y, stroke: 'rgba(255,255,255,.04)', 'stroke-width': 1 }, p1.svg);
+      // shutter button
+      const shR = rgrad(p1.svg, 'shR', '45%', '40%', '60%', [['0%', '#c49830'], ['60%', '#a8832a'], ['100%', '#7a5e1a']]);
+      svgEl('circle', { cx: 516, cy: 106, r: 18, fill: '#1a1a1a', stroke: '#2a2a2a', 'stroke-width': 2 }, p1.svg);
+      svgEl('circle', { cx: 516, cy: 106, r: 13, fill: shR }, p1.svg);
+      svgEl('circle', { cx: 516, cy: 106, r: 5, fill: 'rgba(255,255,255,.12)' }, p1.svg);
+      // record button
+      svgEl('circle', { cx: 494, cy: 136, r: 7, fill: '#1a0a0a', stroke: '#2a1a1a', 'stroke-width': 1 }, p1.svg);
+      svgEl('circle', { cx: 494, cy: 136, r: 4, fill: '#c41f18', opacity: .7 }, p1.svg);
+      // AF joystick
+      svgEl('circle', { cx: 516, cy: 200, r: 10, fill: '#1c1c1c', stroke: '#2c2c2c', 'stroke-width': 1.5 }, p1.svg);
+      svgEl('circle', { cx: 516, cy: 200, r: 5, fill: '#141414' }, p1.svg);
+      // dials
+      svgEl('circle', { cx: 516, cy: 260, r: 14, fill: '#1e1e1e', stroke: '#2a2a2a', 'stroke-width': 1.5 }, p1.svg);
+      svgEl('circle', { cx: 516, cy: 260, r: 9, fill: '#161616' }, p1.svg);
+      svgEl('line', { x1: 516, y1: 248, x2: 516, y2: 254, stroke: '#444', 'stroke-width': 2, 'stroke-linecap': 'round' }, p1.svg);
+      // lens cutout
+      svgEl('circle', { cx: 360, cy: 270, r: 132, 'clip-path': 'url(#cpR)', fill: '#141414', stroke: '#282828', 'stroke-width': 2 }, p1.svg);
+      svgEl('circle', { cx: 360, cy: 270, r: 108, 'clip-path': 'url(#cpR)', fill: '#0e0e0e', stroke: '#2a2a2a', 'stroke-width': 1.5 }, p1.svg);
+      // bayonet dot right
+      svgEl('circle', { cx: 480, cy: 270, r: 7, 'clip-path': 'url(#cpR)', fill: '#b08a2a', opacity: .7 }, p1.svg);
+
+      // ── P2: Top Bar + Viewfinder ──
+      const p2 = mkPiece(container, 'p2');
+      const tG = lgrad(p2.svg, 'tG', '0', '0', '0', '1', [['0%', '#252525'], ['100%', '#141414']]);
+      // top plate
+      svgEl('rect', { x: 60, y: 54, width: 480, height: 38, rx: 7, fill: tG, stroke: '#2a2a2a', 'stroke-width': 1.5 }, p2.svg);
+      svgEl('rect', { x: 61, y: 55, width: 478, height: 2, rx: 1, fill: 'rgba(255,255,255,.05)' }, p2.svg);
+      // viewfinder hump
+      const vfG = lgrad(p2.svg, 'vfG', '0', '0', '0', '1', [['0%', '#202020'], ['100%', '#111']]);
+      svgEl('rect', { x: 258, y: 28, width: 104, height: 64, rx: 10, fill: vfG, stroke: '#2e2e2e', 'stroke-width': 1.5 }, p2.svg);
+      // EVF window
+      const evfG = lgrad(p2.svg, 'evfG', '0', '0', '0', '1', [['0%', '#0a120a'], ['100%', '#040a04']]);
+      svgEl('rect', { x: 268, y: 38, width: 84, height: 44, rx: 5, fill: '#0a0a0a', stroke: '#282828', 'stroke-width': 1 }, p2.svg);
+      svgEl('rect', { x: 272, y: 42, width: 76, height: 36, rx: 3, fill: evfG }, p2.svg);
+      // EVF content simulation
+      svgEl('rect', { x: 276, y: 46, width: 68, height: 28, rx: 2, fill: 'none', stroke: 'rgba(50,120,50,.15)', 'stroke-width': .5 }, p2.svg);
+      svgEl('line', { x1: 310, y1: 46, x2: 310, y2: 74, stroke: 'rgba(50,120,50,.1)', 'stroke-width': .5 }, p2.svg);
+      svgEl('line', { x1: 276, y1: 60, x2: 344, y2: 60, stroke: 'rgba(50,120,50,.1)', 'stroke-width': .5 }, p2.svg);
+      svgEl('text', { x: 279, y: 50, fill: 'rgba(50,180,50,.25)', 'font-family': 'monospace', 'font-size': 5 }, p2.svg).textContent = '1/500  f2.8  ISO400';
+      // hot shoe
+      svgEl('rect', { x: 300, y: 20, width: 60, height: 10, rx: 2, fill: '#1a1a1a', stroke: '#2a2a2a', 'stroke-width': 1 }, p2.svg);
+      svgEl('rect', { x: 306, y: 16, width: 48, height: 6, rx: 1, fill: '#151515' }, p2.svg);
+      // mode dial (left)
+      const mdG = rgrad(p2.svg, 'mdG', '50%', '40%', '55%', [['0%', '#252525'], ['100%', '#141414']]);
+      svgEl('circle', { cx: 106, cy: 64, r: 24, fill: mdG, stroke: '#2e2e2e', 'stroke-width': 1.5 }, p2.svg);
+      svgEl('circle', { cx: 106, cy: 64, r: 16, fill: '#1a1a1a' }, p2.svg);
+      ['M', 'Av', 'Tv', 'P', 'Auto'].forEach((t, i) => {
+        const a = (i / 5) * Math.PI * 2 - Math.PI / 2;
+        const x = 106 + 20 * Math.cos(a), y = 64 + 20 * Math.sin(a) + 3;
+        const txt = svgEl('text', { x, y, 'text-anchor': 'middle', fill: i === 0 ? '#b08a2a' : '#3a3a3a', 'font-size': i === 0 ? 8 : 7, 'font-family': 'monospace' }, p2.svg);
+        txt.textContent = t;
+      });
+      svgEl('circle', { cx: 106, cy: 64, r: 3, fill: '#b08a2a', opacity: .8 }, p2.svg);
+      // exposure comp dial (right)
+      svgEl('circle', { cx: 458, cy: 64, r: 20, fill: '#1e1e1e', stroke: '#2a2a2a', 'stroke-width': 1.5 }, p2.svg);
+      svgEl('circle', { cx: 458, cy: 64, r: 13, fill: '#161616' }, p2.svg);
+      for (let i = 0; i < 12; i++) {
+        const a = (i / 12) * Math.PI * 2;
+        const r1 = 16, r2 = i % 3 === 0 ? 19 : 17;
+        svgEl('line', { x1: 458 + r1 * Math.cos(a), y1: 64 + r1 * Math.sin(a), x2: 458 + r2 * Math.cos(a), y2: 64 + r2 * Math.sin(a), stroke: '#333', 'stroke-width': 1 }, p2.svg);
+      }
+      // mic ports
+      [158, 167, 176].forEach(cx => svgEl('circle', { cx, cy: 64, r: 2.8, fill: '#0e0e0e', stroke: '#1e1e1e', 'stroke-width': 1 }, p2.svg));
+      // speaker grill dots
+      for (let i = 0; i < 4; i++)for (let j = 0; j < 3; j++)svgEl('circle', { cx: 395 + i * 8, cy: 58 + j * 8, r: 1.2, fill: '#1a1a1a' }, p2.svg);
+
+      // ── P3: Outer Lens Ring ──
+      const p3 = mkPiece(container, 'p3');
+      // outer black ring (thick stroke = the ring body)
+      svgEl('circle', { cx: 360, cy: 270, r: 132, fill: 'none', stroke: '#0f0f0f', 'stroke-width': 28 }, p3.svg);
+      svgEl('circle', { cx: 360, cy: 270, r: 132, fill: 'none', stroke: '#1e1e1e', 'stroke-width': 24 }, p3.svg);
+      // ribbed texture on ring
+      for (let i = 0; i < 72; i++) {
+        const a = (i / 72) * Math.PI * 2;
+        const r1 = 120, r2 = 144;
+        svgEl('line', { x1: 360 + r1 * Math.cos(a), y1: 270 + r1 * Math.sin(a), x2: 360 + r2 * Math.cos(a), y2: 270 + r2 * Math.sin(a), stroke: i % 3 === 0 ? '#151515' : '#111', 'stroke-width': 1.5 }, p3.svg);
+      }
+      // red accent line
+      svgEl('circle', { cx: 360, cy: 270, r: 132, fill: 'none', stroke: '#c41f18', 'stroke-width': 2, opacity: .75 }, p3.svg);
+      svgEl('circle', { cx: 360, cy: 270, r: 143, fill: 'none', stroke: '#1a1a1a', 'stroke-width': 1, 'stroke-dasharray': '2,8' }, p3.svg);
+      // focus distance labels
+      [['∞', 360, 132], ['1m', 498, 278], ['0.5m', 360, 416], ['0.3m', 218, 278]].forEach(([t, x, y]) => {
+        svgEl('text', { x, y, fill: '#2a2a2a', 'font-size': 10, 'font-family': 'monospace', 'text-anchor': 'middle' }, p3.svg).textContent = t;
+      });
+      // brand arc text
+      svgEl('path', { id: 'arcA', d: 'M 238 196 A 132 132 0 0 1 482 196', fill: 'none' }, p3.svg);
+      const at = svgEl('text', { 'font-size': 8.5, 'font-family': 'monospace', fill: '#262626', 'letter-spacing': 4.5 }, p3.svg);
+      svgEl('textPath', { href: '#arcA' }, at).textContent = 'FRAMEBREAK  ·  50mm  ·  f/1.4  ·  ∅ 72mm';
+
+      // ── P4: Mid Aperture Ring ──
+      const p4 = mkPiece(container, 'p4');
+      svgEl('circle', { cx: 360, cy: 270, r: 108, fill: 'none', stroke: '#111', 'stroke-width': 22 }, p4.svg);
+      svgEl('circle', { cx: 360, cy: 270, r: 108, fill: 'none', stroke: '#1c1c1c', 'stroke-width': 18 }, p4.svg);
+      svgEl('circle', { cx: 360, cy: 270, r: 108, fill: 'none', stroke: '#b08a2a', 'stroke-width': .8, opacity: .5 }, p4.svg);
+      // aperture teeth
+      for (let i = 0; i < 48; i++) {
+        const a = (i / 48) * Math.PI * 2;
+        const r1 = 100, r2 = i % 4 === 0 ? 97 : 99;
+        svgEl('line', { x1: 360 + r1 * Math.cos(a), y1: 270 + r1 * Math.sin(a), x2: 360 + r2 * Math.cos(a), y2: 270 + r2 * Math.sin(a), stroke: '#1e1e1e', 'stroke-width': 2 }, p4.svg);
+      }
+      svgEl('circle', { cx: 360, cy: 270, r: 116, fill: 'none', stroke: '#181818', 'stroke-width': 1.5, 'stroke-dasharray': '3,6' }, p4.svg);
+      // f-stop markings
+      [['f1.4', 360, 158, true], ['f2', 452, 194, false], ['f2.8', 476, 278, false], ['f4', 452, 362, false], ['f5.6', 360, 390, true], ['f8', 268, 362, false], ['f11', 244, 278, false]].forEach(([t, x, y, gold]) => {
+        svgEl('text', { x, y, fill: gold ? '#b08a2a' : '#252525', 'font-size': 9, 'font-family': 'monospace', 'text-anchor': 'middle' }, p4.svg).textContent = t;
+      });
+
+      // ── P5: Inner Lens Glass ──
+      const p5 = mkPiece(container, 'p5');
+      const d5 = mkDefs(p5.svg);
+      // main lens gradient (deep blue-black)
+      const lG = svgEl('radialGradient', { id: 'lG', cx: '48%', cy: '44%', r: '56%' }, d5);
+      [['0%', '#0e1018'], ['25%', '#080a10'], ['55%', '#050508'], ['100%', '#020204']].forEach(([o, c]) => svgEl('stop', { offset: o, 'stop-color': c }, lG));
+      // coating sheen
+      const sG = svgEl('radialGradient', { id: 'sG', cx: '36%', cy: '32%', r: '48%' }, d5);
+      [['0%', 'rgba(100,120,220,.22)'], ['35%', 'rgba(60,80,160,.1)'], ['70%', 'rgba(30,40,100,.04)'], ['100%', 'transparent']].forEach(([o, c]) => svgEl('stop', { offset: o, 'stop-color': c }, sG));
+      // chromatic aberration tint
+      const caG = svgEl('radialGradient', { id: 'caG', cx: '52%', cy: '56%', r: '50%' }, d5);
+      [['0%', 'transparent'], ['70%', 'transparent'], ['90%', 'rgba(196,31,24,.04)'], ['100%', 'rgba(176,138,42,.06)']].forEach(([o, c]) => svgEl('stop', { offset: o, 'stop-color': c }, caG));
+
+      svgEl('circle', { cx: 360, cy: 270, r: 85, fill: 'url(#lG)' }, p5.svg);
+      svgEl('circle', { cx: 360, cy: 270, r: 85, fill: 'url(#sG)' }, p5.svg);
+      svgEl('circle', { cx: 360, cy: 270, r: 85, fill: 'url(#caG)' }, p5.svg);
+      // aperture blade sim (8 blade)
+      const apG = svgEl('g', { opacity: .55 }, p5.svg);
+      for (let i = 0; i < 8; i++)svgEl('ellipse', { cx: 360, cy: 212, rx: 20, ry: 32, fill: '#060608', transform: `rotate(${i * 45},360,270)` }, apG);
+      // deep glass
+      svgEl('circle', { cx: 360, cy: 270, r: 50, fill: '#030305' }, p5.svg);
+      svgEl('circle', { cx: 360, cy: 270, r: 50, fill: 'url(#sG)', opacity: .4 }, p5.svg);
+      // inner element ring
+      svgEl('circle', { cx: 360, cy: 270, r: 50, fill: 'none', stroke: 'rgba(80,100,200,.08)', 'stroke-width': 2 }, p5.svg);
+      // reflection highlights
+      svgEl('path', { d: 'M 325 248 Q 360 232 395 248', stroke: 'rgba(140,170,255,.2)', 'stroke-width': 4, fill: 'none', 'stroke-linecap': 'round' }, p5.svg);
+      svgEl('path', { d: 'M 333 260 Q 360 250 387 260', stroke: 'rgba(100,130,220,.1)', 'stroke-width': 2.5, fill: 'none', 'stroke-linecap': 'round' }, p5.svg);
+      svgEl('path', { d: 'M 345 272 Q 360 267 375 272', stroke: 'rgba(80,100,180,.07)', 'stroke-width': 1.5, fill: 'none', 'stroke-linecap': 'round' }, p5.svg);
+      // centre catch light
+      svgEl('circle', { cx: 360, cy: 270, r: 10, fill: '#050508' }, p5.svg);
+      svgEl('ellipse', { cx: 355, cy: 266, rx: 4, ry: 2.5, fill: 'rgba(180,200,255,.12)', transform: 'rotate(-20,355,266)' }, p5.svg);
+      // nano coating dots
+      for (let i = 0; i < 6; i++) {
+        const a = (i / 6) * Math.PI * 2 + 0.3;
+        svgEl('circle', { cx: 360 + 65 * Math.cos(a), cy: 270 + 65 * Math.sin(a), r: 1.5, fill: 'rgba(140,160,255,.08)' }, p5.svg);
+      }
+
+      // ── P6: Flash Unit ──
+      const p6 = mkPiece(container, 'p6');
+      const fG = lgrad(p6.svg, 'fG', '0', '0', '0', '1', [['0%', '#222'], ['100%', '#111']]);
+      svgEl('rect', { x: 60, y: 54, width: 148, height: 38, rx: 6, fill: fG, stroke: '#262626', 'stroke-width': 1 }, p6.svg);
+      svgEl('rect', { x: 61, y: 55, width: 146, height: 2, rx: 1, fill: 'rgba(255,255,255,.05)' }, p6.svg);
+      // flash window
+      const fwG = lgrad(p6.svg, 'fwG', '0', '0', '1', '0', [['0%', '#1e1e0a'], ['100%', '#141408']]);
+      svgEl('rect', { x: 70, y: 60, width: 88, height: 26, rx: 4, fill: fwG, stroke: '#2a2a14', 'stroke-width': 1 }, p6.svg);
+      svgEl('rect', { x: 73, y: 63, width: 82, height: 20, rx: 3, fill: 'rgba(200,170,50,.1)' }, p6.svg);
+      // reflector pattern
+      for (let i = 0; i < 5; i++)svgEl('line', { x1: 75 + i * 18, y1: 63, x2: 75 + i * 18, y2: 83, stroke: 'rgba(180,140,30,.06)', 'stroke-width': 1 }, p6.svg);
+      svgEl('text', { x: 78, y: 78, fill: '#b08a2a', 'font-size': 8, 'font-family': 'monospace', opacity: .55 }, p6.svg).textContent = 'FLASH ×1';
+      // ready LED
+      svgEl('circle', { cx: 162, cy: 65, r: 6, fill: '#1a0a0a', stroke: '#2a1414', 'stroke-width': 1 }, p6.svg);
+      svgEl('circle', { cx: 162, cy: 65, r: 4, fill: '#c41f18', opacity: .55 }, p6.svg);
+      svgEl('circle', { cx: 161, cy: 64, r: 1.5, fill: 'rgba(255,100,100,.4)' }, p6.svg);
+      // guide number label
+      svgEl('text', { x: 168, y: 76, fill: '#1e1e1e', 'font-size': 6, 'font-family': 'monospace' }, p6.svg).textContent = 'GN60';
+
+      // ── P7: Bottom Plate ──
+      const p7 = mkPiece(container, 'p7');
+      const btG = lgrad(p7.svg, 'btG', '0', '0', '0', '1', [['0%', '#1a1a1a'], ['100%', '#0e0e0e']]);
+      svgEl('rect', { x: 60, y: 394, width: 480, height: 28, rx: 6, fill: btG, stroke: '#1e1e1e', 'stroke-width': 1 }, p7.svg);
+      svgEl('rect', { x: 61, y: 395, width: 478, height: 2, rx: 1, fill: 'rgba(255,255,255,.03)' }, p7.svg);
+      // tripod mount
+      svgEl('circle', { cx: 300, cy: 408, r: 10, fill: '#0c0c0c', stroke: '#242424', 'stroke-width': 1.5 }, p7.svg);
+      svgEl('text', { x: 296, y: 412, fill: '#2e2e2e', 'font-size': 7, 'font-family': 'monospace' }, p7.svg).textContent = '¼"';
+      // serial number
+      svgEl('text', { x: 340, y: 413, fill: '#181818', 'font-size': 7, 'font-family': 'monospace', 'letter-spacing': 1.5 }, p7.svg).textContent = 'FB-2025-00847';
+      // battery indicator
+      svgEl('rect', { x: 90, y: 400, width: 32, height: 16, rx: 2.5, fill: '#0a0a0a', stroke: '#1e1e1e', 'stroke-width': 1 }, p7.svg);
+      svgEl('rect', { x: 122, y: 405, width: 4, height: 6, rx: 1, fill: '#1a1a1a' }, p7.svg);
+      svgEl('rect', { x: 93, y: 403, width: 22, height: 10, rx: 1.5, fill: '#0a2a0a' }, p7.svg);
+      svgEl('text', { x: 96, y: 411, fill: '#1a3a1a', 'font-size': 6, 'font-family': 'monospace' }, p7.svg).textContent = '78%';
+
+      // ── P8: Shatter Cracks ──
+      const p8 = mkPiece(container, 'p8');
+      p8.el.style.opacity = '0'; p8.el.style.pointerEvents = 'none';
+      const cgMain = svgEl('g', { stroke: '#c41f18', 'stroke-linecap': 'round', fill: 'none', opacity: .9 }, p8.svg);
+      [
+        ['M 295 86 L 272 198 L 360 270', 2, '5,2'],
+        ['M 425 88 L 396 192 L 360 270', 1.6, '4,3'],
+        ['M 58 198 L 196 258 L 360 270', 1.3, '6,3'],
+        ['M 542 176 L 442 256 L 360 270', 1.3, '5,4'],
+        ['M 198 402 L 298 332 L 360 270', 1.1, '3,5'],
+        ['M 482 412 L 412 332 L 360 270', 1.1, '4,4'],
+        ['M 360 86 L 360 270', 1, '6,3'],
+        ['M 60 270 L 360 270', 0.8, '5,5'],
+      ].forEach(([d, sw, da]) => svgEl('path', { d, 'stroke-width': sw, 'stroke-dasharray': da }, cgMain));
+      const cgMicro = svgEl('g', { stroke: '#c41f18', 'stroke-linecap': 'round', fill: 'none', opacity: .45 }, p8.svg);
+      [
+        ['M 295 86 L 238 68', .8, '3,3'],
+        ['M 272 198 L 210 208 L 172 188', .7, '2,4'],
+        ['M 396 192 L 428 162 L 468 172', .7, '2,4'],
+        ['M 442 256 L 494 240 L 526 262', .8, '3,3'],
+        ['M 272 198 L 255 240 L 230 255', .6, '2,5'],
+        ['M 396 192 L 415 234 L 440 242', .6, '2,5'],
+      ].forEach(([d, sw, da]) => svgEl('path', { d, 'stroke-width': sw, 'stroke-dasharray': da }, cgMicro));
+      // impact pulse
+      const imp = svgEl('circle', { cx: 360, cy: 270, r: 12, fill: 'rgba(196,31,24,.28)', opacity: .8 }, p8.svg);
+      const a1 = svgEl('animate', { attributeName: 'r', values: '8;22;8', dur: '1.4s', repeatCount: 'indefinite' }, imp);
+      const a2 = svgEl('animate', { attributeName: 'opacity', values: '.8;.1;.8', dur: '1.4s', repeatCount: 'indefinite' }, imp);
+      // sparks
+      for (let i = 0; i < 6; i++) {
+        const a = (i / 6) * Math.PI * 2;
+        const x = 360 + 18 * Math.cos(a), y = 270 + 18 * Math.sin(a);
+        const x2 = 360 + 38 * Math.cos(a), y2 = 270 + 38 * Math.sin(a);
+        svgEl('line', { x1: x, y1: y, x2: x2, y2: y2, stroke: 'rgba(196,31,24,.6)', 'stroke-width': .8, 'stroke-linecap': 'round' }, p8.svg);
+      }
+
+      return [p0, p1, p2, p3, p4, p5, p6, p7, p8];
+    }
+
+    /* ══ CLONE CAMERA INTO HERO ══ */
+    const heroWrap = document.getElementById('cam-hero-wrap');
+    const storyRoot = document.getElementById('cam-root');
+
+    const heroDiv = document.createElement('div');
+    heroDiv.style.cssText = 'position:relative;width:100%;height:100%;';
+    heroWrap.appendChild(heroDiv);
+
+    // Build one set in hero (display only, no animation needed)
+    buildCamera(heroDiv);
+
+    // Build actual animated set in story section
+    const pieces = buildCamera(storyRoot);
+    const crack = pieces[8];
+
+    /* ══ ANIMATION STATES ══ */
+    // Chapter scroll ranges [0..1] through the story zone
+    const CHAPTERS = [
+      { s: 0, e: 0.15, panel: null, label: '— The Camera —' },
+      { s: 0.15, e: 0.30, panel: 'panel-portfolio', label: '— 01 / Our Work —' },
+      { s: 0.30, e: 0.46, panel: 'panel-vision', label: '— 02 / Our Vision —' },
+      { s: 0.46, e: 0.62, panel: 'panel-services', label: '— 03 / Services —' },
+      { s: 0.62, e: 0.78, panel: 'panel-team', label: '— 04 / The Crew —' },
+      { s: 0.78, e: 1.00, panel: 'panel-cta', label: '— 05 / Begin —' },
+    ];
+
+    // [tx, ty, rz, rx3d, scale, opacity] per piece per chapter
+    const STATES = {
+      asm: pieces.slice(0, 8).map(() => [0, 0, 0, 0, 1, 1]),
+      ch1: [ // portfolio — body halves fly apart, lens prominent
+        [-540, -55, -32, 14, 0.62, 0.06],  // p0 body left → far left
+        [510, 90, 26, -12, 0.62, 0.06], // p1 body right → far right
+        [0, -380, -10, 7, 0.72, 0.1],  // p2 top bar → up
+        [15, -18, 8, 0, 1.02, 0.88],  // p3 outer ring → slight drift, glow
+        [8, -10, -4, 0, 1.0, 0.72],  // p4 mid ring
+        [0, 0, 0, 0, 1.0, 0.95],  // p5 inner lens → stays center
+        [-370, -228, -55, 20, 0.48, 0.05], // p6 flash → top left
+        [45, 390, 14, -9, 0.58, 0.07], // p7 base → drop
+      ],
+      ch2: [ // vision — lens rings become the circle, all else gone
+        [-600, -80, -38, 16, 0.56, 0.03],
+        [560, 96, 30, -14, 0.56, 0.03],
+        [0, -420, -12, 8, 0.68, 0.06],
+        [0, 0, 0, 0, 1.06, 1.0], // p3 fully visible — IS the circle
+        [0, 0, 0, 0, 1.0, 0.92],
+        [0, 0, 360, 0, 0.88, 0.75],// p5 spins open
+        [-420, -272, -65, 24, 0.42, 0.02],
+        [55, 440, 16, -10, 0.52, 0.03],
+      ],
+      ch3: [ // services — all drift to edges
+        [-640, -100, -40, 18, 0.52, 0.02],
+        [590, 112, 34, -15, 0.52, 0.02],
+        [0, -460, -14, 9, 0.64, 0.04],
+        [310, -208, 64, -16, 0.54, 0.07],
+        [-298, -190, -50, 13, 0.50, 0.06],
+        [170, 310, 92, 0, 0.46, 0.05],
+        [-460, -312, -75, 27, 0.38, 0.02],
+        [78, 470, 18, -11, 0.46, 0.03],
+      ],
+      ch4: [ // team — viewfinder brackets prominent
+        [-680, -118, -44, 22, 0.48, 0.02],
+        [620, 128, 38, -17, 0.48, 0.02],
+        [0, -52, 0, 0, 0.60, 0.16], // top bar → thin frame
+        [365, -246, 72, -19, 0.50, 0.05],
+        [-330, -214, -58, 15, 0.46, 0.04],
+        [182, 348, 126, 0, 0.42, 0.04],
+        [-496, -348, -84, 30, 0.36, 0.01],
+        [88, 510, 20, -13, 0.42, 0.02],
+      ],
+      ch5: [ // cta orbit
+        [-180, -260, 18, 9, 0.50, 0.28],
+        [220, -242, -22, -11, 0.50, 0.28],
+        [305, 116, 34, 5, 0.44, 0.22],
+        [-295, 96, -18, -8, 0.52, 0.28],
+        [96, 285, 50, 0, 0.40, 0.20],
+        [-128, 280, -40, 0, 0.40, 0.20],
+        [-268, -96, -58, 20, 0.36, 0.20],
+        [248, 196, 28, -11, 0.40, 0.20],
+      ],
+    };
+    const CH_STATES = [null, STATES.ch1, STATES.ch2, STATES.ch3, STATES.ch4, STATES.ch5];
+
+    function ease(t) { return t < .5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1 }
+    function lerp(a, b, t) { return a + (b - a) * t }
+    function clamp(v, a, b) { return Math.max(a, Math.min(b, v)) }
+    function mapR(t, a, b, c, d) { return lerp(c, d, clamp((t - a) / (b - a), 0, 1)) }
+
+    let lastCh = -1;
+    function onScroll() {
+      const ss = document.getElementById('story-scroll');
+      const rect = ss.getBoundingClientRect();
+      const total = ss.offsetHeight - innerHeight;
+      const prog = clamp(-rect.top / total, 0, 1);
+
+      // find chapter
+      let chi = 0;
+      for (let i = 0; i < CHAPTERS.length; i++)if (prog >= CHAPTERS[i].s) chi = i;
+      const ch = CHAPTERS[chi];
+      const chP = mapR(prog, ch.s, ch.e, 0, 1);
+      const eP = ease(chP);
+
+      // switch panels
+      if (chi !== lastCh) {
+        document.querySelectorAll('.sec-panel').forEach(p => p.classList.remove('active'));
+        if (ch.panel) document.getElementById(ch.panel)?.classList.add('active');
+        const lbl = document.getElementById('chap-label');
+        lbl.textContent = ch.label;
+        lbl.classList.add('show');
+        lastCh = chi;
+      }
+
+      // glow
+      const glow = document.getElementById('cam-glow');
+      glow.style.opacity = chi >= 1 ? (0.5 + chP * 0.35).toString() : '0';
+
+      // crack
+      const crk = mapR(prog, ch.e - 0.06, ch.e, 0, 1) * (1 - mapR(prog, CHAPTERS[1]?.s || 0, CHAPTERS[1]?.s + 0.06 || 0.06, 0, 1));
+      if (chi === 0) crack.el.style.opacity = mapR(prog, ch.e - 0.06, ch.e, 0, 1).toString();
+      else if (chi === 1) crack.el.style.opacity = (1 - mapR(prog, ch.s, ch.s + 0.06, 0, 1)).toString();
+      else crack.el.style.opacity = '0';
+
+      const fromSt = chi === 0 ? STATES.asm : CH_STATES[chi];
+      const toSt = chi < CHAPTERS.length - 1 ? CH_STATES[chi + 1] : STATES.ch5;
+
+      pieces.slice(0, 8).forEach((piece, i) => {
+        const from = fromSt ? fromSt[i] : STATES.asm[i];
+        const to = toSt ? toSt[i] : STATES.asm[i];
+
+        let tx = lerp(from[0], to[0], eP);
+        let ty = lerp(from[1], to[1], eP);
+        let rz = lerp(from[2], to[2], eP);
+        let rx3d = lerp(from[3], to[3], eP);
+        let sc = lerp(from[4], to[4], eP);
+        let op = lerp(from[5], to[5], eP);
+
+        // orbit wiggle in ch5
+        if (chi === 5) {
+          const t = Date.now() * 0.0005;
+          const a = t + i * (Math.PI * 2 / 8);
+          tx += Math.cos(a) * 35;
+          ty += Math.sin(a) * 25;
+          rz += t * 15;
+        }
+
+        piece.el.style.transform = `translate(${tx}px,${ty}px) perspective(1100px) rotateX(${rx3d}deg) rotateZ(${rz}deg) scale(${sc})`;
+        piece.el.style.opacity = op.toString();
+
+        // glow filter on shatter
+        if (chi >= 1 && chi <= 2) {
+          const gA = 10 + eP * 26;
+          const gC = chi === 2 ? `rgba(176,138,42,${eP * .35})` : `rgba(196,31,24,${eP * .4})`;
+          piece.el.style.filter = `drop-shadow(0 0 ${gA}px ${gC})`;
+        } else if (chi >= 3) {
+          piece.el.style.filter = op > 0.15 ? 'drop-shadow(0 0 6px rgba(196,31,24,.12))' : 'none';
+        } else {
+          piece.el.style.filter = 'none';
+        }
+      });
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    // orbit animation loop for ch5
+    let animFrameId;
+    function animLoop() {
+      const ss = document.getElementById('story-scroll');
+      const rect = ss.getBoundingClientRect();
+      const total = ss.offsetHeight - innerHeight;
+      const prog = clamp(-rect.top / total, 0, 1);
+      let chi = 0;
+      for (let i = 0; i < CHAPTERS.length; i++)if (prog >= CHAPTERS[i].s) chi = i;
+      if (chi === 5) onScroll();
+      animFrameId = requestAnimationFrame(animLoop);
+    }
+    animLoop();
+
+    onScroll();
+
+    /* ══ IntersectionObserver for after-scroll ══ */
+    document.querySelectorAll('.stat-box,.svc-card,.t-frame').forEach((el, i) => {
+      el.style.cssText += 'opacity:0;transform:translateY(24px);transition:opacity .55s,transform .55s';
+      new IntersectionObserver(([e]) => {
+        if (e.isIntersecting) {
+          setTimeout(() => { el.style.opacity = '1'; el.style.transform = 'translateY(0)' }, i * 50);
+        }
+      }, { threshold: .1 }).observe(el);
+    });
+  </script>
+</body>
+
+</html>
